@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="CarLocator" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="V7D-sO-Nj9">
+                                <rect key="frame" x="14" y="28" width="347" height="281"/>
+                            </mapView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="c4v-gd-qDe">
+                                <rect key="frame" x="87" y="389" width="200" height="200"/>
+                                <color key="backgroundColor" red="0.078431372549019607" green="0.45490196078431372" blue="0.78431372549019607" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="Pno-Yt-iLa"/>
+                                    <constraint firstAttribute="height" constant="200" id="hbd-cF-m22"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="44"/>
+                                <state key="normal" title="Park">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="parkCar:" destination="BYZ-38-t0r" eventType="touchUpInside" id="nKr-n7-Zca"/>
+                                </connections>
+                            </button>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="jRm-7Y-L1Q">
+                                <rect key="frame" x="220" y="28" width="141" height="29"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <segments>
+                                    <segment title="Standard"/>
+                                    <segment title="Satellite"/>
+                                </segments>
+                                <connections>
+                                    <action selector="mapTypeChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="loE-fs-hjC"/>
+                                </connections>
+                            </segmentedControl>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UnL-kv-UeA">
+                                <rect key="frame" x="87" y="447" width="200" height="200"/>
+                                <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="200" id="58j-3V-YJa"/>
+                                    <constraint firstAttribute="width" constant="200" id="RLN-j1-ymU"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="44"/>
+                                <state key="normal" title="Parked">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="unparkCar:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dVb-tQ-DP0"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="jRm-7Y-L1Q" firstAttribute="trailing" secondItem="V7D-sO-Nj9" secondAttribute="trailing" id="90b-aJ-V1m"/>
+                            <constraint firstItem="V7D-sO-Nj9" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="8" id="99W-l3-4Az"/>
+                            <constraint firstItem="UnL-kv-UeA" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="CLb-P7-Pwd"/>
+                            <constraint firstItem="V7D-sO-Nj9" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="14" id="FRp-0p-YQk"/>
+                            <constraint firstItem="c4v-gd-qDe" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="KrY-Zy-C7s"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="V7D-sO-Nj9" secondAttribute="trailing" constant="14" id="N03-l3-8Ko"/>
+                            <constraint firstItem="UnL-kv-UeA" firstAttribute="top" secondItem="V7D-sO-Nj9" secondAttribute="bottom" constant="138" id="gO3-tf-ahe"/>
+                            <constraint firstItem="jRm-7Y-L1Q" firstAttribute="top" secondItem="V7D-sO-Nj9" secondAttribute="top" id="nGM-Gk-6j9"/>
+                            <constraint firstItem="c4v-gd-qDe" firstAttribute="top" secondItem="V7D-sO-Nj9" secondAttribute="bottom" constant="80" id="qU3-HE-Lte"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="c4v-gd-qDe" secondAttribute="bottom" constant="78" id="urJ-dA-M1y"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <connections>
+                        <outlet property="button" destination="c4v-gd-qDe" id="WK0-uW-ajq"/>
+                        <outlet property="map" destination="V7D-sO-Nj9" id="hwg-q2-SAv"/>
+                        <outlet property="mapTypeBar" destination="jRm-7Y-L1Q" id="an9-2U-HsU"/>
+                        <outlet property="parkedButton" destination="UnL-kv-UeA" id="UEk-2N-a5Z"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="136.80000000000001" y="132.68365817091455"/>
+        </scene>
+    </scenes>
+</document>
