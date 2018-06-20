@@ -12,7 +12,7 @@ var ddb = new AWS.DynamoDB({
 const TABLE_NAME = 'CALVIN_USERS'
 
 // Create Table
-function createTable () {
+function createTable (tableName) {
   var params = {
     AttributeDefinitions: [
       {
@@ -30,7 +30,7 @@ function createTable () {
       ReadCapacityUnits: 1,
       WriteCapacityUnits: 1
     },
-    TableName: TABLE_NAME,
+    TableName: tableName,
     StreamSpecification: {
       StreamEnabled: false
     }
