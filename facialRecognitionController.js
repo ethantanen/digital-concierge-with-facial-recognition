@@ -11,7 +11,7 @@ const rk = require('./rekognitionUtilities')
 const setup = require('./setup')
 
 // TODO: why!!!! fix this!!!
-const NAME = 'testingtesting'
+const NAME = '123456testingtesting'
 
 // Create express object
 app = express()
@@ -37,7 +37,7 @@ setup.setup(NAME)
 
 // Executes when a new object is added to S3, triggered by Lambda
 app.post('/object', (req, res) => {
-  isRecognize(req.body)
+  isRecognized(req.body)
   res.send('Bucket and Object recieved!')
 })
 
@@ -55,7 +55,7 @@ function isRecognized (data) {
       ddb.putItem(NAME, {USER_ID: userId, USER_NAME: 'ethan!'})
 
       // Check if user is already in the database
-      ddb.getItem(userId)
+      ddb.getItem(NAME,userId)
         .then((data) => {
           console.log('data: ', data)
 
