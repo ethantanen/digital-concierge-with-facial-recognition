@@ -8,9 +8,6 @@ var ddb = new AWS.DynamoDB({
   apiVersion: '2012-10-08'
 })
 
-// Tables Name
-const TABLE_NAME = 'CALVIN_USERS'
-
 // Create Table
 function createTable (tableName) {
   var params = {
@@ -35,9 +32,11 @@ function createTable (tableName) {
       StreamEnabled: false
     }
   }
-  ddb.createTable(params, (err, data) => {
-    if (err) return console.log('Err:', err)
-    return console.log('Table added:', JSON.stringify(data))
+  return new Promise((resolve, reject) => {
+    ddb.createTable(params, (err, data) => {
+      if (err) return reject(err)
+      return resolve(data)
+    })
   })
 }
 
@@ -78,7 +77,7 @@ function deleteTable (tableName) {
 }
 
 // Put Item
-function putItem (profile) {
+function putItem (tableName, profile) {
   var params = {
     Item: {
       'USER_ID': {
@@ -89,23 +88,25 @@ function putItem (profile) {
       }
     },
     ReturnConsumedCapacity: 'TOTAL',
-    TableName: TableName
+    TableName: tableName
   }
-  ddb.putItem(params, (err, data) => {
-    if (err) return reject(err)
-    return resolve(data)
+  return new Promise((resolve, reject) => {
+    ddb.putItem(params, (err, data) => {
+      if (err) return reject(err)
+      return resolve(data)
+    })
   })
 }
 
 // Get Item
-function getItem (userId) {
+function getItem (tableName, userId) {
   var params = {
     Key: {
       USER_ID: {
         S: userId
       }
     },
-    TableName: TableName
+    TableName: tableName
   }
   return new Promise((resolve, reject) => {
     ddb.getItem(params, (err, data) => {
@@ -116,14 +117,14 @@ function getItem (userId) {
 }
 
 // Delete Item
-function deleteItem (userId) {
+function deleteItem (tableName, userId) {
   var params = {
     Key: {
       USER_ID: {
         S: userId
       }
     },
-    TableName: 'CALVIN_USERS'
+    TableName: tableName
   }
   return new Promise((resolve, reject) => {
     ddb.deleteItem(params, (err, data) => {
@@ -145,5 +146,5 @@ module.exports = {
   deleteTable: deleteTable,
   putItem: putItem,
   getItem: getItem,
-  deleteItem: deleteItem,
+  deleteItem: deleteItem
 }
