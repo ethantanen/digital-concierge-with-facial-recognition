@@ -1,4 +1,4 @@
-const s3 = require('./s3s3Utilities')
+const s3 = require('./s3Utilities')
 const ddb = require('./dynamoDBUtilities')
 const rk = require('./rekognitionUtilities')
 

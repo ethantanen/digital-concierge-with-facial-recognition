@@ -1,9 +1,4 @@
 const AWS = require('aws-sdk')
-const play = require('audio-play')
-const load = require('audio-loader')
-
-// TODO: shouldnt be global, should be parameter
-const TABLENAME = "123456testingtesting"
 
 AWS.config.update({
   region: 'us-east-1'
@@ -14,6 +9,7 @@ var rk = new AWS.Rekognition({
   apiVersion: '2016-06-27'
 })
 
+// Create Polly service object
 var polly = new AWS.Polly({
   apiVersion: '2016-06-10'
 })
@@ -34,22 +30,6 @@ function synthesizeSpeech(text){
   })
 }
 
-function greeting(data) {
-  if(data.isUser) {
-    gleesh = {USER_ID:data.userId, USER_NAME: "ethan tanen"}
-    ddb.getItem(data.userId)
-      .then((data) => {
-          console.log(data)
-          synthesizeSpeech("Hello, " + gleesh.USER_NAME + ". I hope it gleezy!")
-      })
-      .catch((err) => {
-        console.log("ERR", err)
-      })
-    synthesizeSpeech("Welcom")
-  } else {
-    gleesh = {USER_ID:data.userId, USER_NAME: "ethan tanen"}
-    ddb.putItem(TABLENAME,gleesh)
-    console.log("HELLO!!!!")
-
-  }
+module.exports = {
+  synthesizeSpeech: synthesizeSpeech
 }

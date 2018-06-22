@@ -8,6 +8,7 @@ const bodyParser = require('body-parser')
 const s3 = require('./s3Utilities')
 const ddb = require('./dynamoDBUtilities')
 const rk = require('./rekognitionUtilities')
+const ply = require('./pollyUtilities')
 const setup = require('./setup')
 
 // TODO: why!!!! fix this!!!
@@ -26,7 +27,7 @@ app.listen(3000, (err) => {
 })
 
 // Setup system with name NAME
-//TODO: maybe toss this sucker in a function, when to call?
+// TODO: maybe toss this sucker in a function, when to call?
 setup.setup(NAME)
   .then((data) => {
     console.log('System successfully setup!')
@@ -43,35 +44,59 @@ app.post('/object', (req, res) => {
 
 // Checks if face is in system or not
 function isRecognized (data) {
-
-	// TODO: should NAME be here or should data.bucket be replaced w/ NAME
-  rk.indexFaces(NAME, data.bucket, data.object)
+  // Table and Bucket have same name
+  rk.indexFaces(NAME, NAME, data.object)
     .then((faceInfo) => {
-
       // Users faceprint id
       userId = faceInfo.FaceRecords[0].Face.FaceId
 
-      // TODO: delete me!
-      ddb.putItem(NAME, {USER_ID: userId, USER_NAME: 'ethan!'})
-
       // Check if user is already in the database
-      ddb.getItem(NAME,userId)
+      ddb.getItem(NAME, userId)
         .then((data) => {
-          console.log('data: ', data)
-
           if (data.Item) {
-						// There is data on this mans!
-						console.log(userId)
-						console.log("USER EXISTS!")
-						console.log("DATA: ", JSON.stringify(data,null,2))
+            // There is data on this mans!
+            console.log(userId)
+            console.log('USER EXISTS!')
 
+            answer = {isUser:true, user:data}
+            speak(answer)
 
           } else {
-						// No data on this mans --> add user to database
-						console.log(userId)
-						console.log("USER DOESNT EXIST!")
-						console.log("DATA: ", JSON.stringify(data,null,2))
-					}
+            // No data on this mans --> add user to database
+            console.log(userId)
+            console.log('USER DOESNT EXIST!')
+
+            answer = {isUser:false, user:data}
+            speak(answer)
+
+          }
         })
     })
+}
+
+function speak(data) {
+
+  var message = ""
+
+  // Determine message based on isUser
+  if(data.isUser == true) {
+    message = data.USER_NAME + " is a user. Welcome back!"
+  } else {
+    message = data.USER_NAME + " is not a user. Hopefully you'll join us in the future!"
+  }
+
+  ply.synthesizeSpeech(message)
+    .then((data) => {
+      fs.writeFileSync("gleesh.mp3",data.AudioStream)
+      file = fs.readFileSync("gleesh.mp3")
+      return s3.putObject(file,NAME,"gleesh.mp3")
+        .then((data) => {
+          return console.log("Object in bucket!")
+        })
+        .catch((err) => {
+          return console.log("couldnt put object in bucket...",err)
+        })
+      
+    })
+
 }
