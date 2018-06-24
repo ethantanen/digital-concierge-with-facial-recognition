@@ -3,8 +3,7 @@ createBucket, deleteBucket, listBucket, putObject,
 getObject, deleteObject, listObjects
 */
 
-// TODO: add tagging to putObject
-
+// Published modules
 const AWS = require('aws-sdk')
 const fs = require('fs')
 
@@ -54,7 +53,7 @@ function listBuckets () {
 }
 
 // Put Object
-function putObject (body, bucket, key) {
+function putObject (bucket, body, key) {
   params = {
     Body: body,
     Bucket: bucket,
