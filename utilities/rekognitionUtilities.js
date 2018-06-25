@@ -50,7 +50,10 @@ function indexFaces (collection, bucket, image) {
         Bucket: bucket,
         Name: image
       }
-    }
+    },
+    DetectionAttributes: [
+      "ALL",
+    ],
   }
   return new Promise((resolve, reject) => {
     rk.indexFaces(params, (err, data) => {

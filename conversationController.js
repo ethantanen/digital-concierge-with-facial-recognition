@@ -11,8 +11,7 @@ express = require('express')
 bodyParser = require('body-parser')
 
 // Custom modules
-recc = require('./utilities/recognitionController')
-conc = require('./utilites/conversationController')
+recc = require('./recognitionController')
 
 // Bucket, table and collections name
 const NAME = process.env.NAME
@@ -27,13 +26,14 @@ app.listen(3000, (err) => {
 
 // Function called by lambda
 app.post("/object", (req, res) => {
+  console.log("Lambda hook received...")
   imageInfo = req.body
-  isUser(NAME, NAME, imageInfo.object)
+  determineIsUser(NAME, NAME, imageInfo.object)
   res.send("Image info received!")
 })
 
 // Redirects to the conversation controller
-function isUser(collection, bucket, image) {
+function determineIsUser(collection, bucket, image) {
   recc.isUserById(collection,bucket,image)
     .then((res) => {
      /*
