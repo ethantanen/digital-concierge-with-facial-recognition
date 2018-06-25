@@ -24,6 +24,11 @@ app.listen(3000, (err) => {
   return console.log("Listening on port 3000")
 })
 
+/*
+ * Lambda no longer necessary due to architecture
+ * redesign.
+ */
+/*
 // Function called by lambda
 app.post("/object", (req, res) => {
   console.log("Lambda hook received...")
@@ -31,9 +36,18 @@ app.post("/object", (req, res) => {
   determineIsUser(NAME, NAME, imageInfo.object)
   res.send("Image info received!")
 })
+*/
 
+/*
+ * WARNING: there may be issues with the value of key if
+ * there are multiple requests to this endpoint at the same
+ * time due to the putObject64 promise.
+ */
 // New image endpoint
 app.post("/image", (req, res) => {
+
+  // Images key
+  key = req.body.key
 
   // Base-64 encoded image as text
   img_64_string = req.body.image.split(",")[1]
@@ -42,10 +56,10 @@ app.post("/image", (req, res) => {
   img_64_buffer = new Buffer(img_64_string,"base64")
 
   // Use s3 utiltiies to put object in bucket
-  s3.putObject64(NAME,img_64_buffer,"test.jpeg")
+  s3.putObject64(NAME,img_64_buffer,key)
     .then((data) => {
-
-      console.log("Success!")
+      console.log("Image put in bucket...!")
+      determineIsUser(NAME, NAME, key )
     })
     .catch((err) => {
       console.log("ERR",err)
