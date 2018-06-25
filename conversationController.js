@@ -18,7 +18,7 @@ const NAME = process.env.NAME
 
 // Create express app, add middleware and begin listening on port 3000
 app = express()
-app.use(bodyParser.json())
+app.use(bodyParser())
 app.listen(3000, (err) => {
   if (err) return console.log("Can't connect to port 3000.",err)
   return console.log("Listening on port 3000")
@@ -30,6 +30,25 @@ app.post("/object", (req, res) => {
   imageInfo = req.body
   determineIsUser(NAME, NAME, imageInfo.object)
   res.send("Image info received!")
+})
+
+// Test delete me!
+app.post("/image", (req, res) => {
+
+  // Base-64 encoded image as text
+  img_64_string = req.body.image.split(",")[1]
+
+  // Convert text to buffer
+  img_64_buffer = new Buffer(img_64_string,"base64")
+
+  // Use s3 utiltiies to put object in bucket
+  s3.putObject64(NAME,img_64_buffer,"test.jpeg")
+    .then((data) => {
+      console.log("Success!")
+    })
+    .catch((err) => {
+      console.log("ERR",err)
+    })
 })
 
 // Redirects to the conversation controller

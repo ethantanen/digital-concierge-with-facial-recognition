@@ -67,6 +67,22 @@ function putObject (bucket, body, key) {
   })
 }
 
+// Put Object
+function putObject64 (bucket, buffer, key) {
+  params = {
+    Body: buffer,
+    Bucket: bucket,
+    Key: key,
+    ContentType: 'image/jpeg'
+  }
+  return new Promise((resolve, reject) => {
+    s3.putObject(params, (err, data) => {
+      if (err) return reject(err)
+      return resolve(data)
+    })
+  })
+}
+
 // Get Object
 function getObject (bucket, key) {
   params = {
@@ -113,6 +129,7 @@ module.exports = {
   deleteBucket: deleteBucket,
   listBuckets: listBuckets,
   putObject: putObject,
+  putObject64: putObject64,
   getObject: getObject,
   deleteObject: deleteObject,
   listObjects: listObjects
