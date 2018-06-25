@@ -20,6 +20,7 @@
     "audio-loader": "^1.0.3",
     "audio-play": "^2.2.0",
     "aws-sdk": "^2.260.1",
+    "body-parser": "^1.18.3",
     "express": "^4.16.3"
   }
 }

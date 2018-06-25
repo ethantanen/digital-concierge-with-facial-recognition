@@ -1,12 +1,12 @@
+/*
+ * synthesizeSpeech
+ */
+
+// Published modules 
 const AWS = require('aws-sdk')
 
 AWS.config.update({
   region: 'us-east-1'
-})
-
-// Create Rekognition Service Object
-var rk = new AWS.Rekognition({
-  apiVersion: '2016-06-27'
 })
 
 // Create Polly service object

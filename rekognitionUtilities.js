@@ -1,3 +1,9 @@
+/*
+ * createCollection, deleteCollection, indexFaces, listCollections,
+ * searchFaces, searchFacesByImage
+ */
+
+// Published modules
 AWS = require('aws-sdk')
 
 AWS.config.update({
@@ -67,11 +73,11 @@ function listCollections () {
 // Search Faces
 function searchFaces (collection, faceId) {
   var params = {
-    CollectionID: collection,
+    CollectionId: collection,
     FaceId: faceId
   }
   return new Promise((resolve, reject) => {
-    rekognition.searchFaces(params, (err, data) => {
+    rk.searchFaces(params, (err, data) => {
       if (err) return reject(err)
       return resolve(data)
     })

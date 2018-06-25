@@ -1,5 +1,9 @@
-// TODO: should table name be constant or should each function have tablename param??? change to use east 2
+/*
+ * createTable, listTables, describeTable, deleteTable, putItem,
+ * getItem, deleteItem
+ */
 
+ // Publishes modules 
 const AWS = require('aws-sdk')
 
 // Create DynamoDB service object
@@ -77,6 +81,7 @@ function deleteTable (tableName) {
 }
 
 // Put Item
+// TODO: add key to item's object for each new feature
 function putItem (tableName, profile) {
   var params = {
     Item: {

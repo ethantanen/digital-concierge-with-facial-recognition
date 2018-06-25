@@ -3,13 +3,12 @@
  * This file receives the call from the lambda function
  * and redirects the response accordingly. That is, it
  * determines if the image from lambda is in fact a user
- * and executes either greeting or user setup response
- * before entering the conversation loop.
+ * and executes conversation protocol accordingly.
  */
 
 // Published modules
 express = require('express')
-body-parser = require('body-parser')
+bodyParser = require('body-parser')
 
 // Custom modules
 recc = require('./recognitionController')
@@ -17,6 +16,7 @@ conc = require('./conversationController')
 
 // Bucket, table and collections name
 const NAME = process.env.NAME
+
 // Create express app, add middleware and begin listening on port 3000
 app = express()
 app.use(bodyParser.json())
@@ -28,23 +28,50 @@ app.listen(3000, (err) => {
 // Function called by lambda
 app.post("/object", (req, res) => {
   imageInfo = req.body
-  console.log("received image: ", imageInfo)
   isUser(NAME, NAME, imageInfo.object)
   res.send("Image info received!")
 })
 
 // Redirects to the conversation controller
 function isUser(collection, bucket, image) {
-  recc.isUserByImage(image)
+  recc.isUserById(collection,bucket,image)
     .then((res) => {
-      /*
-       * Greet the user if they're in the system and create
-       * a new user if they're not in the system.
-       */
+     /*
+      * treat user differently if they're
+      * new or returning.
+      */
       if(res.isUser) {
-        conc.greet(res.id)
+        isUser(res.id)
       } else {
-        conc.newUser(res.id)
+        isNotUser(res.id)
       }
     })
 }
+
+function isUser(id) {
+  console.log("Returning User!", id)
+  /*
+   * retrieve users information from table and enter
+   * conversation loop
+   */
+}
+
+function isNotUser(id) {
+  console.log("New User!", id)
+  /*
+   * prompt if users wants to be added to the system.
+   * may be next version b/c new user input requires
+   * coordinating many events.
+   */
+}
+
+// Get conversation
+
+// Prompt question
+
+// Execute conversation
+/*
+ * loop through conversation prompting questions and
+ * records responses in a JavaScript object/dict. Make
+ * function call using object's values as parameters.
+ */
