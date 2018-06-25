@@ -11,8 +11,8 @@ express = require('express')
 bodyParser = require('body-parser')
 
 // Custom modules
-recc = require('./recognitionController')
-conc = require('./conversationController')
+recc = require('./utilities/recognitionController')
+conc = require('./utilites/conversationController')
 
 // Bucket, table and collections name
 const NAME = process.env.NAME

@@ -1,6 +1,6 @@
 // Custom modules
-const rk = require('./rekognitionUtilities')
-const ddb = require("./dynamoDBUtilities")
+const rk = require('./utilities/rekognitionUtilities')
+const ddb = require(''./utilities/dynamoDBUtilities')
 
 // Determines if the img is a user by id
 function isUserById (collection, bucket, image) {
