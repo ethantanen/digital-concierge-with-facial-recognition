@@ -32,7 +32,7 @@ app.post("/object", (req, res) => {
   res.send("Image info received!")
 })
 
-// Test delete me!
+// New image endpoint
 app.post("/image", (req, res) => {
 
   // Base-64 encoded image as text
@@ -44,6 +44,7 @@ app.post("/image", (req, res) => {
   // Use s3 utiltiies to put object in bucket
   s3.putObject64(NAME,img_64_buffer,"test.jpeg")
     .then((data) => {
+
       console.log("Success!")
     })
     .catch((err) => {
