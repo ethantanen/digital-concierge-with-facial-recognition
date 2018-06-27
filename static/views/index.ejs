@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title> Calvin Test </title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -7,64 +8,75 @@
 </head>
 
 <body>
-
-  <div class="jumbotron">
+  <div class="container">
+    <!-- Begin Calvin Header -->
     <div class="row">
       <div class="col-lg-12">
-        <h1> Calvin Test </h1>
+        <h1 class="text-center"> Calvin Test </h1>
       </div>
     </div>
+    <!-- End Calvin Header -->
+
 
     <div class="row">
-      <div class="col-lg-4">ASS</div>
-      <div class="col-lg-8">
-          <video id="videos" width="400" height="300" autoplay></video>
-          <canvas id="canvas" width="400" height="300"></canvas>
+
+      <!-- Begin Video Elements -->
+      <div class="col-lg-5">
+        <div class="row">
+          <div class="well">
+            <video id="videos" width="400" height="300" autoplay></video>
+          </div>
+          <div class="well">
+            <canvas id="canvas" width="400" height="300"></canvas>
+          </div>
+        </div>
+        <div class="row">
+          <button id="snap" class="btn btn-primary">Snap Photo</button>
+          <button id="send" class="btn btn-success">Send Photo</button>
+        </div>
       </div>
-    </div>
+      <!-- End Video Elements -->
 
-    <div class="row">
-      <div class="col-sm-12">
-        <button id="snap">Snap Photo</button>
-        <button id="send">Send Photo</button>
-      </div>
-    </div>
-  </div>
+      <div class="col-lg-2"></div>
 
-
-
-  <div class="container">
-    <div class="row">
-      <div class="col-md-offset-4 col-md-4">
-        <br><br><br><br><br>
-        <!-- Choose File to be Uploaded Form -->
-        <h4> Choose a File </h4>
-        <div class="form-group">
-          <label class="btn btn-block btn-primary">
+      <div class="col-lg-5">
+        <div class="row">
+          <!-- Choose File to be Uploaded Form -->
+          <div class="well">
+            <h4> Choose a File </h4>
+            <div class="form-group">
+              <label class="btn btn-block btn-primary">
             Browse<input type="file" id="file" style="display: none;" onchange="$('#upload-file-info').val($(this).val());">
           </label>
-          <input type="text"  class="form-control" readonly>
+              <input type="text" class="form-control" readonly>
+            </div>
+            <button type="submit" id="uploadfile" class="btn btn-success">Submit</button>
+          </div>
+          <!-- End Choose fieldsetle -->
+
+          <!-- Respond to Prompts Form -->
+          <div class="well">
+            <h4>  Response </h4>
+            <div class="input-group">
+              <span class="input-group-addon "> Text </span>
+              <input id="response" autocomplete="off" name="text" type="text" class="form-control" placeholder="input response after being prompted">
+            </div>
+            <br>
+            <button id="conversation" type="submit" class="btn btn-success">Submit</button>
+          </div>
         </div>
-        <button type="submit" id="uploadfile" class="btn btn-success">Submit</button>
+      </div>
 
-        <!-- Respond to Prompts Form -->
-        <h4>  Response </h4>
-        <div class="input-group">
-          <span class="input-group-addon "> Text </span>
-          <input id="response" autocomplete="off" name="text" type="text" class="form-control"  placeholder="input response after being prompted">
-        </div>
-        <br>
-        <button  id="conversation" type="submit" class="btn btn-success">Submit</button>
-
-
-        <script>
+      <script>
         // Get access to the camera!
-        if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({ video: true })
-              .then(function(stream) {
-                  video.src = window.URL.createObjectURL(stream);
-                  video.play()
-              });
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          navigator.mediaDevices.getUserMedia({
+              video: true
+            })
+            .then(function(stream) {
+              video.src = window.URL.createObjectURL(stream);
+              video.play()
+            });
         }
 
         // Elements for taking the snapshot
@@ -74,23 +86,19 @@
 
         // Trigger photo take
         document.getElementById("snap").addEventListener("click", function() {
-        	context.drawImage(video, 0, 0, 400, 300)
+          context.drawImage(video, 0, 0, 400, 300)
         });
 
-        // Download on click
-        $('#send').click(function(){
-            //document.getElementById('canvas').toBlob((data) => {console.log(data)},'image/jpeg')
-             $(this).parent().attr('href', document.getElementById('canvas').toDataURL());
-             $(this).parent().attr('download', "gleesh.jpg");
-        });
 
         function sendImage64(img_64) {
-          img_64 = {info:img_64}
+          img_64 = {
+            info: img_64
+          }
           $.ajax({
             type: "POST",
             url: "/s3",
             data: img_64,
-            success: function(res){
+            success: function(res) {
               console.log(res)
               playAudio()
             },
@@ -105,10 +113,10 @@
           audio.play()
         }
 
-        $('#send').click(function(){
+        $('#send').click(function() {
 
-            img_64 = document.getElementById('canvas').toDataURL("image/jpeg")
-            sendImage64(img_64)
+          img_64 = document.getElementById('canvas').toDataURL("image/jpeg")
+          sendImage64(img_64)
 
         });
 
@@ -122,22 +130,22 @@
         })
 
         $('#conversation').click(function() {
-          res = {res:$('#response').val()}
-            $.ajax({
-              type: "POST",
-              url: "/conversation",
-              data: res,
-              success: function(res){
-                console.log(res)
-                playAudio()
-              },
-              dataType: "json"
-            });
+          res = {
+            res: $('#response').val()
+          }
+          $.ajax({
+            type: "POST",
+            url: "/conversation",
+            data: res,
+            success: function(res) {
+              console.log(res)
+              playAudio()
+            },
+            dataType: "json"
+          });
         })
+      </script>
 
-        </script>
-
-      </div>
     </div>
   </div>
 </body>

@@ -1,8 +1,4 @@
 
-// Object of conversations with callword as key
-conversations = {}
-
-
 // Conversation object
 conversation = {
   questions: [],
@@ -10,9 +6,8 @@ conversation = {
   index: 0,
   end: false,
   next: function() {
-    if(this.index == this.questions.length || this.end == true) {
+    if(this.index == this.questions.length-1 || this.end == true) {
       this.end = true
-      return undefined
     }
     question = this.questions[this.index]
     this.index += 1
@@ -24,19 +19,23 @@ conversation = {
   summary: function() {}
 }
 
-// Add conversation to the list of available conversations
-function addConversation(callword,questions,summary) {
+// Conversation manager object
+conversationManager = {
+  conversations: {},
+  add: function(callword, questions, summary){
+    this.conversations[callword]           = Object.assign({},conversation)
+    this.conversations[callword].questions = questions
+    this.conversations[callword].summary   = summary
 
-  // create conversation object
-  c = conversation
-  c.questions = questions
-  c.summary = summary
+  }
+}
 
-  // add object to conversation list
-  conversations[callword] = c
+// Returns the conversation manager
+function getConversations(){
+  return conversationManager
 }
 
 module.exports = {
-  addConversation:addConversation,
-  conversations: conversations,
+  conversationManager : conversationManager,
+  getConversations: getConversations,
 }

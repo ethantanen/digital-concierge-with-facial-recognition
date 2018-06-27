@@ -23,10 +23,6 @@ ddb = require('./utilities/dynamoDBUtilities')
 // Bucket, table and collection name
 const NAME = process.env.NAME
 
-// Setup
-register.addConversation("greet",[["What's your name?","name"],["What's your number?","number"]],function() {
- return "your name is " + this.answers.name + " and your number is " + this.answers.number
-})
 
 /********************************************************
               Application Routing
@@ -63,7 +59,6 @@ app.post("/s3", (req,res) =>{
        */
      determineIsUser(NAME, NAME, 'gleesh.jpeg')
         .then((data) => {
-          console.log("HERE")
           res.send({})
       })
      })
@@ -74,40 +69,82 @@ app.post("/s3", (req,res) =>{
 })
 
 // Endpoint reached when text is submitted
-var current = ""
-var conver = {}
-var term = "stop"
+var term = "stop" // terminate conversation word
+var isTalk = false //boolean for if conversation is in progress
+
+
+
+/********************************************************
+            Adding Conversations to Register
+********************************************************/
+var conversations = register.getConversations()
+
+conversations.add("checkin", [["Hello, how are you?","feeling"],["And hows the homestead?","fam"]], function() {
+  return "So your family is " + this.answers.fam + " and your feeling " + this.answers.feeling
+})
+conversations.add("add", [["What's the first number?","num1"],["and what is the second number?","num2"]], function() {
+  return "The sum of " + this.answers.num1 + " and " + this.answers.num2 + " is " +  (parseInt(this.answers.num1) + parseInt(this.answers.num2))
+})
+conversations.add("help", [["Click submit and I'll tell you what I can help with!","num1"]], function() {
+  return "checkin, add, and help"
+})
+
+
+var conversation = []
 app.post('/conversation', (req, res) => {
-  //form = new formidable.IncomingForm
-  //return form.parse(req, (err, forms, files) => {
 
+    // Users response
     text = req.body.res
-    console.log("HERE", text)
+    // Always terminate if text is the termination string
+    if (text === term) {
+      conversation = []
+      isTalk = false
+      return talk("Darling, this conversation is ending.")
+        .then(() => {
+          res.send({})
+        })
+    } else {
 
-    if(text == term) {
-      current =""
-      talk("Darling, this conversation is ending!")
-    }else{
-      if(register.conversations[text]) {
-        current=text
-        conver=Object.assign({},register.conversations[current])
-        talk(conver.next())
-      }else{
+      // Check if users in a conversation
+      if (!isTalk) {
+        // Conversation hasn't started, check if input is a callword
+        if(Object.keys(conversations.conversations).includes(text)) {
+          // text is a callword and begin the conversation
+          isTalk = true
+          conversation = conversations.conversations[text]
+          talk(conversation.next())
+            .then(()=>{
+              res.send({})
+            })
+        }else{
+          return talk("Please input a valid callword.")
+            .then((data) => {
+              res.send({})
+            })
+        }
+      } else {
 
-        conver.answer(text)
-        question = conver.next()
-        if(question) {
-          talk(question)
+        conversation.answer(text)
+        // In conversation mode
+        if(conversation.end != true) {
+          //conversations still going
+          talk(conversation.next())
+            .then(()=>{
+              res.send({})
+            })
+        } else {
+          talk(conversation.summary())
+            .then(() => {
+              conversation = []
+              isTalk = false
+              res.send({})
+            })
         }
-        else {
-          // questioning is over, make api call and read summary
-          talk(conver.summary())
-          current = ""
-        }
+
+
       }
     }
-    res.send({})
-  //})
+
 })
 
 /********************************************************
@@ -132,13 +169,17 @@ function determineIsUser(collection, bucket, image) {
     .then((res) => {
       // treat user differently if they're new or returning
       if(res.isUser) {
-        talk("is user")
+        console.log(res.id)
+        ddb.getItem(NAME,res.id)
           .then((data) => {
-            return resolve()
+            console.log(data)
+            talk("Welcome back! " + data.Item.USER_NAME.S + " its damn good to see u. Lets talk!")
+              .then((data) => {
+                return resolve()
+              })
           })
-
       } else {
-        talk("not user")
+        talk("It appears your not a user. Hopefully you will join us in the future! but Lets talk anyway!")
           .then((data) => {
             return resolve()
           })

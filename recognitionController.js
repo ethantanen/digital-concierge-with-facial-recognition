@@ -9,40 +9,31 @@ function returnObject(isUser,id){
 // Determines if the img is a user by id
 function isUserById (collection, bucket, image) {
   return new Promise((resolve, reject) => {
+      /*
+      rk.indexFaces(collection, bucket, image)
+        .then((data) => {
+          console.log("DID THE DIRTY")
+        })
+        */
+      console.log("searching faces for match...")
       rk.searchFacesByImage(collection,bucket,image)
         .then((res) => {
 
           // May need to cycle through all faces, not just take largest one
           if(res.FaceMatches.length > 0){
-            console.log(res.FaceMatches[0])
+            console.log("found face with " + res.FaceMatches[0].Similarity + " percent similarity...")
             id = res.FaceMatches[0].Face.FaceId
             return resolve(returnObject(true,id))
           }else{
+            console.log("face not found...")
             return resolve(returnObject(false,null))
           }
-
-
-
-
         })
         .catch((err) => {
-          console.log("EEK")
           reject(err)
         })
   })
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 module.exports = {
   isUserById: isUserById,

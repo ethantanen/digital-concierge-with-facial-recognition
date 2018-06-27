@@ -2,7 +2,7 @@
  * synthesizeSpeech
  */
 
-// Published modules 
+// Published modules
 const AWS = require('aws-sdk')
 
 AWS.config.update({
