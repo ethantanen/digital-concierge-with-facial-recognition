@@ -12,36 +12,37 @@ express    = require('express')
 formidable = require('formidable')
 fs         = require('fs')
 request    = require('request-promise')
-https = require('https')
+https      = require('https')
 
 // Custom modules
-recc = require('./recognitionController')
-s3   = require('./utilities/s3Utilities')
-ply  = require('./utilities/pollyUtilities')
+recc     = require('./recognitionController')
+s3       = require('./utilities/s3Utilities')
+ply      = require('./utilities/pollyUtilities')
 register = require('./utilities/register')
-ddb = require('./utilities/dynamoDBUtilities')
+ddb      = require('./utilities/dynamoDBUtilities')
+
+/********************************************************
+              Application/ Environment Setup
+********************************************************/
 
 // Bucket, table and collection name
 const NAME = process.env.NAME
 
-
-
-/********************************************************
-              Application Routing
-********************************************************/
-
-// Create express app, add middleware, set view engine
+/*
+ * Create express app, add middleware, set view engine
+ * and static file directory
+ */
 app = express()
 app.set('view engine', 'ejs');
 app.set('views',__dirname + "/static/views")
 app.use(express.static(__dirname + '/static'))
 app.use(bodyParser({limit:"50mb"}))
 
-// Begin listening on port 3000
 /*
  * NOTE: openssl req -nodes -new -x509 -keyout server.key -out server.cert
  * --> use this to generate a self signed certificate
  */
+ // Begin https server on port 3000
 https.createServer({
   key: fs.readFileSync('./encryption/server.key'),
   cert: fs.readFileSync('./encryption/server.cert')
@@ -51,32 +52,37 @@ https.createServer({
   return console.log("Listening on port 3000")
 })
 
+/********************************************************
+              Application Routing
+********************************************************/
 
 // Home page endpoint
 app.get("/", (req, res) => {
   res.render("index.ejs", {})
 })
 
+// Endpoint for facial recognition
 app.post("/s3", (req,res) =>{
 
   // get base-64 encoded image from request
   buf = new Buffer(req.body.info.split(",")[1], "base64")
 
-  return s3.putObject64(NAME,buf,"gleesh.jpeg")
+  // put object in s3 bucket before recognition analysis
+  return s3.putObject64(NAME,buf,"img.jpeg")
     .then((data) => {
       /*
        * execute recognition only after the image
        * is successfully placed in the Bucket
        */
-     determineIsUser(NAME, NAME, 'gleesh.jpeg')
+     determineIsUser(NAME, NAME, 'img.jpeg')
         .then((data) => {
           res.send({})
       })
      })
     .catch((err) => {
        console.log(err)
-       res.send({})
-   })
+       res.send({error: "Error with recognition"})
+     })
 })
 
 /********************************************************
@@ -177,6 +183,7 @@ function determineIsUser(collection, bucket, image) {
       if(res.isUser) {
         ddb.getItem(NAME,res.id)
           .then((data) => {
+            // TODO: create conversation w/ user entry from table aswell as analysis from rekog.  
             talk("Welcome back! " + data.Item.USER_NAME.S + " its damn good to see u. Lets talk!")
               .then((data) => {
                 return resolve()
