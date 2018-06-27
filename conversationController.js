@@ -7,105 +7,145 @@
  */
 
 // Published modules
-express = require('express')
 bodyParser = require('body-parser')
+express    = require('express')
+formidable = require('formidable')
+fs         = require('fs')
+request    = require('request-promise')
 
 // Custom modules
 recc = require('./recognitionController')
+s3   = require('./utilities/s3Utilities')
+ply  = require('./utilities/pollyUtilities')
+register = require('./utilities/register')
+ddb = require('./utilities/dynamoDBUtilities')
 
-// Bucket, table and collections name
+// Bucket, table and collection name
 const NAME = process.env.NAME
 
-// Create express app, add middleware and begin listening on port 3000
+// Setup
+register.addConversation("greet",[["What's your name?","name"],["What's your number?","number"]],function() {
+ return "your name is " + this.answers.name + " and your number is " + this.answers.number
+})
+
+/********************************************************
+              Application Routing
+********************************************************/
+
+// Create express app, add middleware, set view engine
 app = express()
-app.use(bodyParser())
+app.set('view engine', 'ejs');
+app.set('views',__dirname + "/static/views")
+app.use(express.static(__dirname + '/static'))
+app.use(bodyParser({limit:"50mb"}))
+
+// Begin listening on port 3000
 app.listen(3000, (err) => {
   if (err) return console.log("Can't connect to port 3000.",err)
   return console.log("Listening on port 3000")
 })
 
-/*
- * Lambda no longer necessary due to architecture
- * redesign.
- */
-/*
-// Function called by lambda
-app.post("/object", (req, res) => {
-  console.log("Lambda hook received...")
-  imageInfo = req.body
-  determineIsUser(NAME, NAME, imageInfo.object)
-  res.send("Image info received!")
+// Home page endpoint
+app.get("/", (req, res) => {
+  res.render("index.ejs", {})
 })
-*/
 
-/*
- * WARNING: there may be issues with the value of key if
- * there are multiple requests to this endpoint at the same
- * time due to the putObject64 promise.
- */
-// New image endpoint
-app.post("/image", (req, res) => {
+app.post("/s3", (req,res) =>{
 
-  // Images key
-  key = req.body.key
+  // get base-64 encoded image from request
+  buf = new Buffer(req.body.info.split(",")[1], "base64")
 
-  // Base-64 encoded image as text
-  img_64_string = req.body.image.split(",")[1]
-
-  // Convert text to buffer
-  img_64_buffer = new Buffer(img_64_string,"base64")
-
-  // Use s3 utiltiies to put object in bucket
-  s3.putObject64(NAME,img_64_buffer,key)
+  return s3.putObject64(NAME,buf,"gleesh.jpeg")
     .then((data) => {
-      console.log("Image put in bucket...!")
-      determineIsUser(NAME, NAME, key )
+      /*
+       * execute recognition only after the image
+       * is successfully placed in the Bucket
+       */
+     determineIsUser(NAME, NAME, 'gleesh.jpeg')
+        .then((data) => {
+          console.log("HERE")
+          res.send({})
+      })
+     })
+    .catch((err) => {
+       console.log(err)
+       res.send({})
+   })
+})
+
+// Endpoint reached when text is submitted
+var current = ""
+var conver = {}
+var term = "stop"
+app.post('/conversation', (req, res) => {
+  //form = new formidable.IncomingForm
+  //return form.parse(req, (err, forms, files) => {
+
+    text = req.body.res
+    console.log("HERE", text)
+
+    if(text == term) {
+      current =""
+      talk("Darling, this conversation is ending!")
+    }else{
+      if(register.conversations[text]) {
+        current=text
+        conver=Object.assign({},register.conversations[current])
+        talk(conver.next())
+      }else{
+
+        conver.answer(text)
+        question = conver.next()
+        if(question) {
+          talk(question)
+        }
+        else {
+          // questioning is over, make api call and read summary
+          talk(conver.summary())
+          current = ""
+        }
+      }
+    }
+    res.send({})
+  //})
+})
+
+/********************************************************
+              Application Functionality
+********************************************************/
+
+// Synthesize and record a string
+function talk(text){
+  return ply.synthesizeSpeech(text)
+    .then((data) => {
+      fs.writeFileSync("static/audio/speech.mp3",data.AudioStream)
     })
     .catch((err) => {
-      console.log("ERR",err)
+      console.log(err)
     })
-})
+}
 
 // Redirects to the conversation controller
 function determineIsUser(collection, bucket, image) {
-  recc.isUserById(collection,bucket,image)
+  return new Promise((resolve,reject) => {
+   recc.isUserById(collection,bucket,image)
     .then((res) => {
-     /*
-      * treat user differently if they're
-      * new or returning.
-      */
+      // treat user differently if they're new or returning
       if(res.isUser) {
-        isUser(res.id)
+        talk("is user")
+          .then((data) => {
+            return resolve()
+          })
+
       } else {
-        isNotUser(res.id)
+        talk("not user")
+          .then((data) => {
+            return resolve()
+          })
       }
     })
+    .catch((err) => {
+      reject(err)
+    })
+  })
 }
-
-function isUser(id) {
-  console.log("Returning User!", id)
-  /*
-   * retrieve users information from table and enter
-   * conversation loop
-   */
-}
-
-function isNotUser(id) {
-  console.log("New User!", id)
-  /*
-   * prompt if users wants to be added to the system.
-   * may be next version b/c new user input requires
-   * coordinating many events.
-   */
-}
-
-// Get conversation
-
-// Prompt question
-
-// Execute conversation
-/*
- * loop through conversation prompting questions and
- * records responses in a JavaScript object/dict. Make
- * function call using object's values as parameters.
- */

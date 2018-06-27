@@ -87,7 +87,7 @@ function searchFaces (collection, faceId) {
   })
 }
 
-// SearchFacesByImage
+// Search Faces By Image
 function searchFacesByImage (collection, bucket, image) {
   var params = {
     CollectionId: collection,
@@ -106,6 +106,23 @@ function searchFacesByImage (collection, bucket, image) {
   })
 }
 
+// Delete Faces
+function deleteFaces(collection, id) {
+  var params = {
+   CollectionId: collection,
+   FaceIds: [
+      id,
+   ]
+  }
+  return new Promise((resolve, reject) => {
+    rk.deleteFaces(params, function(err, data) {
+      if (err) return reject(err)
+      return resolve(data)
+    })
+  })
+
+}
+
 // Expose functions
 module.exports = {
   createCollection: createCollection,
@@ -113,5 +130,6 @@ module.exports = {
   indexFaces: indexFaces,
   listCollections: listCollections,
   searchFaces: searchFaces,
-  searchFacesByImage: searchFacesByImage
+  searchFacesByImage: searchFacesByImage,
+  deleteFaces: deleteFaces,
 }

@@ -3,7 +3,7 @@
  * getItem, deleteItem
  */
 
- // Publishes modules 
+ // Publishes modules
 const AWS = require('aws-sdk')
 
 // Create DynamoDB service object
@@ -13,17 +13,17 @@ var ddb = new AWS.DynamoDB({
 })
 
 // Create Table
-function createTable (tableName) {
+function createTable (tableName, primaryKeyName) {
   var params = {
     AttributeDefinitions: [
       {
-        AttributeName: 'USER_ID',
+        AttributeName: primaryKeyName,
         AttributeType: 'S'
       }
     ],
     KeySchema: [
       {
-        AttributeName: 'USER_ID',
+        AttributeName: primaryKeyName,
         KeyType: 'HASH'
       }
     ],

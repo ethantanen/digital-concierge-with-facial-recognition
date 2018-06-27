@@ -73,6 +73,7 @@ function putObject64 (bucket, buffer, key) {
     Body: buffer,
     Bucket: bucket,
     Key: key,
+    ContentEncoding: 'base64',
     ContentType: 'image/jpeg'
   }
   return new Promise((resolve, reject) => {
