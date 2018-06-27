@@ -12,6 +12,7 @@ express    = require('express')
 formidable = require('formidable')
 fs         = require('fs')
 request    = require('request-promise')
+https = require('https')
 
 // Custom modules
 recc = require('./recognitionController')
@@ -22,6 +23,8 @@ ddb = require('./utilities/dynamoDBUtilities')
 
 // Bucket, table and collection name
 const NAME = process.env.NAME
+
+
 
 /********************************************************
               Application Routing
@@ -35,10 +38,19 @@ app.use(express.static(__dirname + '/static'))
 app.use(bodyParser({limit:"50mb"}))
 
 // Begin listening on port 3000
-app.listen(3000, (err) => {
+/*
+ * NOTE: openssl req -nodes -new -x509 -keyout server.key -out server.cert
+ * --> use this to generate a self signed certificate
+ */
+https.createServer({
+  key: fs.readFileSync('./encryption/server.key'),
+  cert: fs.readFileSync('./encryption/server.cert')
+},app)
+.listen(3000, (err) => {
   if (err) return console.log("Can't connect to port 3000.",err)
   return console.log("Listening on port 3000")
 })
+
 
 // Home page endpoint
 app.get("/", (req, res) => {
