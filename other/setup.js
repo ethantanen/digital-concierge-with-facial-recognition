@@ -16,7 +16,6 @@ setupSystem()
 /*
  * Create necessary storage containers
  */
-
 function setupSystem() {
 
   // bucket for which put operation triggers lambda
@@ -28,7 +27,7 @@ function setupSystem() {
   // create collection for indexed faces
   p3 = rk.createCollection(name)
 
-
+  // Wait until everythings setup before confirming Success or Failure
   Promise.all([p1, p2, p3])
     .then((data) => {
       console.log(data)
@@ -38,12 +37,4 @@ function setupSystem() {
     })
 }
 
-/*
- * Supported conversations
- */
-
-// design conversations here
-
-function setupConversations() {
-
-}
+//TODO: may want to setup conversations here with some function??

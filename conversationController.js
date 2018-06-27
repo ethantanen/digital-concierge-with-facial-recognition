@@ -23,7 +23,6 @@ ddb = require('./utilities/dynamoDBUtilities')
 // Bucket, table and collection name
 const NAME = process.env.NAME
 
-
 /********************************************************
               Application Routing
 ********************************************************/
@@ -68,12 +67,6 @@ app.post("/s3", (req,res) =>{
    })
 })
 
-// Endpoint reached when text is submitted
-var term = "stop" // terminate conversation word
-var isTalk = false //boolean for if conversation is in progress
-
-
-
 /********************************************************
             Adding Conversations to Register
 ********************************************************/
@@ -89,10 +82,14 @@ conversations.add("help", [["Click submit and I'll tell you what I can help with
   return "checkin, add, and help"
 })
 
-
+// Current conversation information TODO: none of this should be global!!
 var conversation = []
-app.post('/conversation', (req, res) => {
+var term = "stop" // terminate conversation word
+var isTalk = false //boolean for if conversation is in progress
 
+// Conversation endpoint
+//TODO: redo all of this cuz it ugly!!!
+app.post('/conversation', (req, res) => {
     // Users response
     text = req.body.res
     // Always terminate if text is the termination string
@@ -104,7 +101,6 @@ app.post('/conversation', (req, res) => {
           res.send({})
         })
     } else {
-
       // Check if users in a conversation
       if (!isTalk) {
         // Conversation hasn't started, check if input is a callword
@@ -123,7 +119,7 @@ app.post('/conversation', (req, res) => {
             })
         }
       } else {
-
+        // Record answer in conversation object
         conversation.answer(text)
         // In conversation mode
         if(conversation.end != true) {
@@ -133,6 +129,7 @@ app.post('/conversation', (req, res) => {
               res.send({})
             })
         } else {
+          // Orate conversation summary and reset isTalk and conversation variables
           talk(conversation.summary())
             .then(() => {
               conversation = []
@@ -140,11 +137,8 @@ app.post('/conversation', (req, res) => {
               res.send({})
             })
         }
-
-
       }
     }
-
 })
 
 /********************************************************
@@ -169,10 +163,8 @@ function determineIsUser(collection, bucket, image) {
     .then((res) => {
       // treat user differently if they're new or returning
       if(res.isUser) {
-        console.log(res.id)
         ddb.getItem(NAME,res.id)
           .then((data) => {
-            console.log(data)
             talk("Welcome back! " + data.Item.USER_NAME.S + " its damn good to see u. Lets talk!")
               .then((data) => {
                 return resolve()

@@ -66,87 +66,90 @@
           </div>
         </div>
       </div>
-
-      <script>
-        // Get access to the camera!
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-          navigator.mediaDevices.getUserMedia({
-              video: true
-            })
-            .then(function(stream) {
-              video.src = window.URL.createObjectURL(stream);
-              video.play()
-            });
-        }
-
-        // Elements for taking the snapshot
-        var canvas = document.getElementById('canvas');
-        var context = canvas.getContext('2d');
-        var video = document.getElementById('videos');
-
-        // Trigger photo take
-        document.getElementById("snap").addEventListener("click", function() {
-          context.drawImage(video, 0, 0, 400, 300)
-        });
-
-
-        function sendImage64(img_64) {
-          img_64 = {
-            info: img_64
-          }
-          $.ajax({
-            type: "POST",
-            url: "/s3",
-            data: img_64,
-            success: function(res) {
-              console.log(res)
-              playAudio()
-            },
-            dataType: "json"
-          });
-        }
-
-        function playAudio() {
-          var url = "/audio/speech.mp3?d=" + new Date().getTime()
-          var audio = new Audio(url)
-          audio.load()
-          audio.play()
-        }
-
-        $('#send').click(function() {
-
-          img_64 = document.getElementById('canvas').toDataURL("image/jpeg")
-          sendImage64(img_64)
-
-        });
-
-        $('#uploadfile').click(function() {
-          img = document.getElementById('file').files[0]
-          reader = new FileReader()
-          reader.readAsDataURL(img)
-          reader.onload = function() {
-            sendImage64(reader.result)
-          }
-        })
-
-        $('#conversation').click(function() {
-          res = {
-            res: $('#response').val()
-          }
-          $.ajax({
-            type: "POST",
-            url: "/conversation",
-            data: res,
-            success: function(res) {
-              console.log(res)
-              playAudio()
-            },
-            dataType: "json"
-          });
-        })
-      </script>
-
     </div>
   </div>
+  <script>
+
+    // Request access to the camera!
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({
+          video: true
+        })
+        .then(function(stream) {
+          video.src = window.URL.createObjectURL(stream);
+          video.play()
+        });
+    }
+
+    // Elements for taking and displaying the snapshot
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+    var video = document.getElementById('videos');
+
+    // Trigger take photo
+    document.getElementById("snap").addEventListener("click", function() {
+      context.drawImage(video, 0, 0, 400, 300)
+    });
+
+
+    // Send base64 encoded img to backend
+    function sendImage64(img_64) {
+      img_64 = {
+        info: img_64
+      }
+      $.ajax({
+        type: "POST",
+        url: "/s3",
+        data: img_64,
+        success: function(res) {
+          console.log(res)
+          playAudio()
+        },
+        dataType: "json"
+      });
+    }
+
+    // Play speech.mp3 file
+    function playAudio() {
+      var url = "/audio/speech.mp3?d=" + new Date().getTime()
+      var audio = new Audio(url)
+      audio.load()
+      audio.play()
+    }
+
+    $('#send').click(function() {
+
+      img_64 = document.getElementById('canvas').toDataURL("image/jpeg")
+      sendImage64(img_64)
+
+    });
+
+    // Send upload file to backend
+    $('#uploadfile').click(function() {
+      img = document.getElementById('file').files[0]
+      reader = new FileReader()
+      reader.readAsDataURL(img)
+      reader.onload = function() {
+        sendImage64(reader.result)
+      }
+    })
+
+    // Send conversation responses to backend
+    $('#conversation').click(function() {
+      res = {
+        res: $('#response').val()
+      }
+      $.ajax({
+        type: "POST",
+        url: "/conversation",
+        data: res,
+        success: function(res) {
+          console.log(res)
+          playAudio()
+        },
+        dataType: "json"
+      });
+    })
+  </script>
 </body>
 </html

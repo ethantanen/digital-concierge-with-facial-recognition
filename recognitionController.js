@@ -2,6 +2,7 @@
 const rk = require('./utilities/rekognitionUtilities')
 const ddb = require('./utilities/dynamoDBUtilities')
 
+// Object sent to the conversation controller 
 function returnObject(isUser,id){
   return {isUser:isUser, id:id}
 }
@@ -10,6 +11,7 @@ function returnObject(isUser,id){
 function isUserById (collection, bucket, image) {
   return new Promise((resolve, reject) => {
       /*
+      // Current add new user function TODO: change this in the next iteration
       rk.indexFaces(collection, bucket, image)
         .then((data) => {
           console.log("DID THE DIRTY")
