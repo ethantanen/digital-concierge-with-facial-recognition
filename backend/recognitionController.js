@@ -2,10 +2,6 @@
 const rk = require('./utilities/rekognitionUtilities')
 const ddb = require('./utilities/dynamoDBUtilities')
 
-// Object sent to the conversation controller 
-function returnObject(isUser,id){
-  return {isUser:isUser, id:id}
-}
 
 // Determines if the img is a user by id
 function isUserById (collection, bucket, image) {
@@ -18,18 +14,36 @@ function isUserById (collection, bucket, image) {
         })
         */
       console.log("searching faces for match...")
-      rk.searchFacesByImage(collection,bucket,image)
+      recog = rk.searchFacesByImage(collection,bucket,image)
         .then((res) => {
-
           // May need to cycle through all faces, not just take largest one
           if(res.FaceMatches.length > 0){
             console.log("found face with " + res.FaceMatches[0].Similarity + " percent similarity...")
             id = res.FaceMatches[0].Face.FaceId
-            return resolve(returnObject(true,id))
+            return {isUser:true,id:id}
           }else{
             console.log("face not found...")
-            return resolve(returnObject(false,null))
+            return {isUser:false,id:null}
           }
+        })
+        .catch((err) => {
+          reject(err)
+        })
+
+      console.log("detecting facial featrues...")
+      face = rk.detectFaces(bucket, image)
+        .then((res) => {
+          console.log("facial feature detection successful...")
+          return {face: res}
+        })
+        .catch((err) => {
+          console.log("unable to detect facial features...")
+          reject(err)
+        })
+
+      return Promise.all([recog,face])
+        .then((data) => {
+          return resolve({...data[0],...data[1]})
         })
         .catch((err) => {
           reject(err)

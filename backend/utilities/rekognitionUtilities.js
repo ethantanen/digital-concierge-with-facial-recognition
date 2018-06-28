@@ -115,12 +115,32 @@ function deleteFaces(collection, id) {
    ]
   }
   return new Promise((resolve, reject) => {
-    rk.deleteFaces(params, function(err, data) {
+    rk.deleteFaces(params, (err, data) => {
       if (err) return reject(err)
       return resolve(data)
     })
   })
+}
 
+// Detect Faces (emotions, features, etc)
+function detectFaces(bucket, image) {
+  var params = {
+    Image: {
+      S3Object: {
+        Bucket: bucket,
+        Name: image
+      }
+    },
+    Attributes: [
+      "ALL",
+    ]
+  }
+  return new Promise((resolve, reject) => {
+    rk.detectFaces(params, (err, data) => {
+        if (err) return reject(err)
+        return resolve(data)
+    })
+  })
 }
 
 // Expose functions
@@ -132,4 +152,5 @@ module.exports = {
   searchFaces: searchFaces,
   searchFacesByImage: searchFacesByImage,
   deleteFaces: deleteFaces,
+  detectFaces: detectFaces,
 }

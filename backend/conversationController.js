@@ -99,6 +99,12 @@ conversations.add("add", [["What's the first number?","num1"],["and what is the 
 conversations.add("help", [["Click submit and I'll tell you what I can help with!","num1"]], function() {
   return "checkin, add, and help"
 })
+conversations.add("favnumber",[["Whats your favorite number?","num"]],function() {
+  num = (Math.floor(Math.random()*100)).toString(2).split("").join(" ")
+  console.log(num)
+  return  this.answers.num + "?  What is that base 10? Hahaha,human scum! My favorite number is" + num
+})
+
 
 // Current conversation information TODO: none of this should be global!!
 var conversation = []
@@ -180,11 +186,14 @@ function determineIsUser(collection, bucket, image) {
    recc.isUserById(collection,bucket,image)
     .then((res) => {
       // treat user differently if they're new or returning
+      console.log(JSON.stringify(res.face,null,2))
       if(res.isUser) {
         ddb.getItem(NAME,res.id)
           .then((data) => {
-            // TODO: create conversation w/ user entry from table aswell as analysis from rekog.  
-            talk("Welcome back! " + data.Item.USER_NAME.S + " its damn good to see u. Lets talk!")
+
+
+            // TODO: create conversation w/ user entry from table aswell as analysis from rekog.
+            talk("Welcome back! " + data.Item.USER_NAME.S + " its damn good to see u. Lets talk!" + "You look " + JSON.stringify(res.face.FaceDetails[0].Emotions))
               .then((data) => {
                 return resolve()
               })
