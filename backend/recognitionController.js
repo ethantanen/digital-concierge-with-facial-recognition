@@ -30,7 +30,7 @@ function isUserById (collection, bucket, image) {
           reject(err)
         })
 
-      console.log("detecting facial featrues...")
+      console.log("detecting facial features...")
       face = rk.detectFaces(bucket, image)
         .then((res) => {
           console.log("facial feature detection successful...")

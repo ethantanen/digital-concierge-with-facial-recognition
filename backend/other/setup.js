@@ -3,6 +3,8 @@
 * the same name.
 */
 
+//TODO: should delete old tables, containers, etc...
+
 // Custom modules
 const s3 = require('../utilities/s3Utilities')
 const ddb = require('../utilities/dynamoDBUtilities')
