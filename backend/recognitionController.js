@@ -6,13 +6,13 @@ const ddb = require('./utilities/dynamoDBUtilities')
 // Determines if the img is a user by id
 function isUserById (collection, bucket, image) {
   return new Promise((resolve, reject) => {
-      /*
+     /* 
       // Current add new user function TODO: change this in the next iteration
       rk.indexFaces(collection, bucket, image)
         .then((data) => {
           console.log("DID THE DIRTY")
         })
-        */
+       */ 
       console.log("searching faces for match...")
       recog = rk.searchFacesByImage(collection,bucket,image)
         .then((res) => {
@@ -20,7 +20,8 @@ function isUserById (collection, bucket, image) {
           if(res.FaceMatches.length > 0){
             console.log("found face with " + res.FaceMatches[0].Similarity + " percent similarity...")
             id = res.FaceMatches[0].Face.FaceId
-            return {isUser:true,id:id}
+//            ddb.putItem(process.env.NAME,{USER_ID:id,USER_NAME: "Ethan Flippy-Doodle Tanen"})
+	    return {isUser:true,id:id}
           }else{
             console.log("face not found...")
             return {isUser:false,id:null}

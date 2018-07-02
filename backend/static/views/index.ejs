@@ -70,7 +70,7 @@
   </div>
   <script>
 
-  
+
 
     // Request access to the camera!
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -101,7 +101,7 @@
       }
       $.ajax({
         type: "POST",
-        url: "/s3",
+        url: "/authenticate",
         data: img_64,
         success: function(res) {
           console.log(res)
@@ -119,6 +119,7 @@
       audio.play()
     }
 
+    // Sends image to server in base_64
     $('#send').click(function() {
 
       img_64 = document.getElementById('canvas').toDataURL("image/jpeg")
@@ -139,7 +140,7 @@
     // Send conversation responses to backend
     $('#conversation').click(function() {
       res = {
-        res: $('#response').val()
+        text: $('#response').val()
       }
       $.ajax({
         type: "POST",

@@ -1,10 +1,17 @@
 /*
- * This is the main controller for Calvin.
- * This file receives the call from the lambda function
- * and redirects the response accordingly. That is, it
- * determines if the image from lambda is in fact a user
- * and executes conversation protocol accordingly.
+ * This is the main controller for Calvin. It is responsible
+ * for validating users, managing their session and curating
+ * conversation experience.
  */
+
+ /*
+  * TODO: add cookies with time limit that adds a few minutes each time
+  * the users makes a request. The state of the users experience (facial
+  * features, authorization information, account information?) should be
+  * stored in a temporary data structure that exists only for the duration
+  * of the interaction. Make middleware that determines if a user is authenticated
+  * and request authentication if the user is not.
+  */
 
 // Published modules
 bodyParser = require('body-parser')
@@ -18,8 +25,8 @@ https      = require('https')
 recc     = require('./recognitionController')
 s3       = require('./utilities/s3Utilities')
 ply      = require('./utilities/pollyUtilities')
-register = require('./utilities/register')
 ddb      = require('./utilities/dynamoDBUtilities')
+lex      = require('./utilities/lexUtilities')
 
 /********************************************************
               Application/ Environment Setup
@@ -47,122 +54,73 @@ https.createServer({
   key: fs.readFileSync('./encryption/server.key'),
   cert: fs.readFileSync('./encryption/server.cert')
 },app)
-.listen(3000, (err) => {
-  if (err) return console.log("Can't connect to port 3000.",err)
-  return console.log("Listening on port 3000")
+.listen(8000, (err) => {
+  if (err) return console.log("Can't connect to port 8000.",err)
+  return console.log("Listening on port 8000")
+})
+
+// Render home page
+app.get('/',(req, res) => {
+  res.render('index.ejs')
 })
 
 /********************************************************
-              Application Routing
+              Facial Recognition/ Authentication
 ********************************************************/
 
-// Home page endpoint
-app.get("/", (req, res) => {
-  res.render("index.ejs", {})
-})
-
+//TODO: generate auth id, set cookie and create entry in conversation context list of some sort
 // Endpoint for facial recognition
-app.post("/s3", (req,res) =>{
+app.post("/authenticate", async (req,res) =>{
 
   // get base-64 encoded image from request
   buf = new Buffer(req.body.info.split(",")[1], "base64")
 
-  // put object in s3 bucket before recognition analysis
-  return s3.putObject64(NAME,buf,"img.jpeg")
-    .then((data) => {
-      /*
-       * execute recognition only after the image
-       * is successfully placed in the Bucket
-       */
-     determineIsUser(NAME, NAME, 'img.jpeg')
-        .then((data) => {
-          res.send({})
-      })
-     })
-    .catch((err) => {
-       console.log(err)
-       res.send({error: "Error with recognition"})
-     })
+  // put the base-64 encoded image in the bucket
+  await s3.putObject64(NAME,buf,"img.jpeg")
+  result = await recc.isUserById(NAME, NAME, "img.jpeg")
+
+  // TODO: what to do after we know if the current user is a user??
+  if (result.isUser) {
+    stream = await talk("You are a user.")
+  } else {
+    stream = await talk("You are not a user.")
+  }
 })
 
 /********************************************************
-            Adding Conversations to Register
+          Conversation Manager
 ********************************************************/
-var conversations = register.getConversations()
 
-conversations.add("checkin", [["Hello, how are you?","feeling"],["And hows the homestead?","fam"]], function() {
-  return "So your family is " + this.answers.fam + " and your feeling " + this.answers.feeling
-})
-conversations.add("add", [["What's the first number?","num1"],["and what is the second number?","num2"]], function() {
-  return "The sum of " + this.answers.num1 + " and " + this.answers.num2 + " is " +  (parseInt(this.answers.num1) + parseInt(this.answers.num2))
-})
-conversations.add("help", [["Click submit and I'll tell you what I can help with!","num1"]], function() {
-  return "checkin, add, and help"
-})
-conversations.add("favnumber",[["Whats your favorite number?","num"]],function() {
-  num = (Math.floor(Math.random()*100)).toString(2).split("").join(" ")
-  console.log(num)
-  return  this.answers.num + "?  What is that base 10? Hahaha,human scum! My favorite number is" + num
-})
+/*
+ * TODO: validate each request, will need to keep track
+ * of the previous prompt from lex. My idea is to simply
+ * send the intent and ellicit with each response and have
+ * the front side send it right back.
+ * NOTE: an example of validation is checking if an email
+ * is in the ventera address book before sending the email
+ *
+ * will also need to check if the conversation is fulfilled
+ * and respond accordingly/ make an api call.
+ */
 
+ // Conversation endpoint
+app.post('/conversation', async (req, res) => {
 
-// Current conversation information TODO: none of this should be global!!
-var conversation = []
-var term = "stop" // terminate conversation word
-var isTalk = false //boolean for if conversation is in progress
+  // Get users input from request
+  text = req.body.text
 
-// Conversation endpoint
-//TODO: redo all of this cuz it ugly!!!
-app.post('/conversation', (req, res) => {
-    // Users response
-    text = req.body.res
-    // Always terminate if text is the termination string
-    if (text === term) {
-      conversation = []
-      isTalk = false
-      return talk("Darling, this conversation is ending.")
-        .then(() => {
-          res.send({})
-        })
-    } else {
-      // Check if users in a conversation
-      if (!isTalk) {
-        // Conversation hasn't started, check if input is a callword
-        if(Object.keys(conversations.conversations).includes(text)) {
-          // text is a callword and begin the conversation
-          isTalk = true
-          conversation = conversations.conversations[text]
-          talk(conversation.next())
-            .then(()=>{
-              res.send({})
-            })
-        }else{
-          return talk("Please input a valid callword.")
-            .then((data) => {
-              res.send({})
-            })
-        }
-      } else {
-        // Record answer in conversation object
-        conversation.answer(text)
-        // In conversation mode
-        if(conversation.end != true) {
-          //conversations still going
-          talk(conversation.next())
-            .then(()=>{
-              res.send({})
-            })
-        } else {
-          // Orate conversation summary and reset isTalk and conversation variables
-          talk(conversation.summary())
-            .then(() => {
-              conversation = []
-              isTalk = false
-              res.send({})
-            })
-        }
-      }
-    }
+  // Get Calvin's response
+  lexRes = await lex.postText('1234567', text)
+
+  // Grab the message from Calvin's response
+  msg = lexRes.message
+
+  // Generate an audio response
+  // TODO: lex can do this if a parameter is switched...
+  stream = await talk(msg)
+
+  //fs.writeFileSync("static/audio/speech.mp3",stream)
+  res.send({audio:stream})
 })
 
 /********************************************************
@@ -170,43 +128,7 @@ app.post('/conversation', (req, res) => {
 ********************************************************/
 
 // Synthesize and record a string
-function talk(text){
-  return ply.synthesizeSpeech(text)
-    .then((data) => {
-      fs.writeFileSync("static/audio/speech.mp3",data.AudioStream)
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-}
-
-// Redirects to the conversation controller
-function determineIsUser(collection, bucket, image) {
-  return new Promise((resolve,reject) => {
-   recc.isUserById(collection,bucket,image)
-    .then((res) => {
-      // treat user differently if they're new or returning
-      console.log(JSON.stringify(res.face,null,2))
-      if(res.isUser) {
-        ddb.getItem(NAME,res.id)
-          .then((data) => {
-
-
-            // TODO: create conversation w/ user entry from table aswell as analysis from rekog.
-            talk("Welcome back! " + data.Item.USER_NAME.S + " its damn good to see u. Lets talk!" + "You look " + JSON.stringify(res.face.FaceDetails[0].Emotions))
-              .then((data) => {
-                return resolve()
-              })
-          })
-      } else {
-        talk("It appears your not a user. Hopefully you will join us in the future! but Lets talk anyway!")
-          .then((data) => {
-            return resolve()
-          })
-      }
-    })
-    .catch((err) => {
-      reject(err)
-    })
-  })
+async function talk(text){
+  data = await ply.synthesizeSpeech(text)
+  return data.AudioStream
 }
