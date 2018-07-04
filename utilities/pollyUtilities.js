@@ -20,7 +20,7 @@ function synthesizeSpeech(text){
     OutputFormat: "mp3",
     SampleRate: "8000",
     Text: text,
-    VoiceId: "Geraint"
+    VoiceId: "Matthew"
   }
   return new Promise((resolve, reject) => {
     polly.synthesizeSpeech(params, (err, data) => {

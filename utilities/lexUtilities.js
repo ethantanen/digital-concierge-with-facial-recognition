@@ -19,19 +19,19 @@ const CONTENT_TYPE = 'text/plain; charset=utf-8'
  * for text and 'audio/*' for audio, where * takes
  * the value of the desired audio file format
  */
-const ACCEPT = 'text/plain'
-
+const ACCEPT = 'audio/*'
 /*
  * Post text or video to lex
  * userId used to manage a users session/
  * keep track of the current state of the
  * users conversation
  */
-function postContent(userId) {
+function postContent(userId,text) {
   var params = {
     botAlias: BOT_ALIAS,
     botName: BOT_NAME,
     contentType: CONTENT_TYPE,
+    inputStream: text,
     userId: userId,
     accept: ACCEPT,
   }

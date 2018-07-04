@@ -5,6 +5,7 @@
   <title> Calvin Test </title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="./views/script.js"></script>
 </head>
 
 <body>
@@ -16,7 +17,6 @@
       </div>
     </div>
     <!-- End Calvin Header -->
-
 
     <div class="row">
 
@@ -68,91 +68,6 @@
       </div>
     </div>
   </div>
-  <script>
-
-
-
-    // Request access to the camera!
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      navigator.mediaDevices.getUserMedia({
-          video: true
-        })
-        .then(function(stream) {
-          video.src = window.URL.createObjectURL(stream);
-          video.play()
-        });
-    }
-
-    // Elements for taking and displaying the snapshot
-    var canvas = document.getElementById('canvas');
-    var context = canvas.getContext('2d');
-    var video = document.getElementById('videos');
-
-    // Trigger take photo
-    document.getElementById("snap").addEventListener("click", function() {
-      context.drawImage(video, 0, 0, 400, 300)
-    });
-
-
-    // Send base64 encoded img to backend
-    function sendImage64(img_64) {
-      img_64 = {
-        info: img_64
-      }
-      $.ajax({
-        type: "POST",
-        url: "/authenticate",
-        data: img_64,
-        success: function(res) {
-          console.log(res)
-          playAudio()
-        },
-        dataType: "json"
-      });
-    }
-
-    // Play speech.mp3 file
-    function playAudio() {
-      var url = "/audio/speech.mp3?d=" + new Date().getTime()
-      var audio = new Audio(url)
-      audio.load()
-      audio.play()
-    }
-
-    // Sends image to server in base_64
-    $('#send').click(function() {
-
-      img_64 = document.getElementById('canvas').toDataURL("image/jpeg")
-      sendImage64(img_64)
-
-    });
-
-    // Send upload file to backend
-    $('#uploadfile').click(function() {
-      img = document.getElementById('file').files[0]
-      reader = new FileReader()
-      reader.readAsDataURL(img)
-      reader.onload = function() {
-        sendImage64(reader.result)
-      }
-    })
-
-    // Send conversation responses to backend
-    $('#conversation').click(function() {
-      res = {
-        text: $('#response').val()
-      }
-      $.ajax({
-        type: "POST",
-        url: "/conversation",
-        data: res,
-        success: function(res) {
-          console.log(res)
-          playAudio()
-        },
-        dataType: "json"
-      });
-    })
-  </script>
+  <audio id="audio"> </audio>
 </body>
-</html
+</html>
