@@ -15,12 +15,12 @@ var polly = new AWS.Polly({
 })
 
 // Synthesize Speech
-function synthesizeSpeech(text){
+function synthesizeSpeech (text) {
   var params = {
-    OutputFormat: "mp3",
-    SampleRate: "8000",
+    OutputFormat: 'mp3',
+    SampleRate: '8000',
     Text: text,
-    VoiceId: "Geraint"
+    VoiceId: 'Geraint'
   }
   return new Promise((resolve, reject) => {
     polly.synthesizeSpeech(params, (err, data) => {

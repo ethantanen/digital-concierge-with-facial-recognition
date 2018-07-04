@@ -1,57 +1,39 @@
 // Custom modules
 const rk = require('./utilities/rekognitionUtilities')
-const ddb = require('./utilities/dynamoDBUtilities')
 
+// Determines if the img is a user by an image
+function isUser (collection, bucket, image) {
+  // get facial features and determine if image is of user
+  var features = detectFacialFeatures(bucket, image)
+  var recognize = determineIsUserByImage(collection, bucket, image)
 
-// Determines if the img is a user by id
-function isUserById (collection, bucket, image) {
-  return new Promise((resolve, reject) => {
-     /* 
-      // Current add new user function TODO: change this in the next iteration
-      rk.indexFaces(collection, bucket, image)
-        .then((data) => {
-          console.log("DID THE DIRTY")
-        })
-       */ 
-      console.log("searching faces for match...")
-      recog = rk.searchFacesByImage(collection,bucket,image)
-        .then((res) => {
-          // May need to cycle through all faces, not just take largest one
-          if(res.FaceMatches.length > 0){
-            console.log("found face with " + res.FaceMatches[0].Similarity + " percent similarity...")
-            id = res.FaceMatches[0].Face.FaceId
-//            ddb.putItem(process.env.NAME,{USER_ID:id,USER_NAME: "Ethan Flippy-Doodle Tanen"})
-	    return {isUser:true,id:id}
-          }else{
-            console.log("face not found...")
-            return {isUser:false,id:null}
-          }
-        })
-        .catch((err) => {
-          reject(err)
-        })
+  // wait for functions to complete, concatenate objects and return
+  return Promise.all([features, recognize])
+    .then((data) => {
+      return resolve({...data[0], ...data[1]})
+    })
+    .catch((err) => {
+      return reject({error: 'no face in image'})
+    })
+}
 
-      console.log("detecting facial features...")
-      face = rk.detectFaces(bucket, image)
-        .then((res) => {
-          console.log("facial feature detection successful...")
-          return {face: res}
-        })
-        .catch((err) => {
-          console.log("unable to detect facial features...")
-          reject(err)
-        })
+// Determine the facial features of the user in the image
+async function detectFacialFeatures (bucket, image) {
+  var features = await rk.detectFaces(bucket, image)
+  return {face: features}
+}
 
-      return Promise.all([recog,face])
-        .then((data) => {
-          return resolve({...data[0],...data[1]})
-        })
-        .catch((err) => {
-          reject(err)
-        })
-  })
+// Determine if the image contains a user
+async function determineIsUserByImage (collection, bucket, image) {
+  var res = await rk.searchFacesByImage(collection, bucket, image)
+  if (res.FaceMatches.length > 0) {
+    var id = res.FaceMatches[0].Face.FaceId
+    return {isUser: true, id: id}
+  } else {
+    return {isUser: false, id: null}
+  }
 }
 
 module.exports = {
-  isUserById: isUserById,
+  isUser: isUser
 }

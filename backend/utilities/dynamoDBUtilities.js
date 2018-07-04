@@ -3,7 +3,7 @@
  * getItem, deleteItem
  */
 
- // Publishes modules
+// Publishes modules
 const AWS = require('aws-sdk')
 
 // Create DynamoDB service object
@@ -137,11 +137,6 @@ function deleteItem (tableName, userId) {
       return resolve(data)
     })
   })
-}
-
-// Query
-function query () {
-
 }
 
 module.exports = {

@@ -3,7 +3,7 @@
 * the same name.
 */
 
-//TODO: should delete old tables, containers, etc...
+// TODO: should delete old tables, containers, etc...
 
 // Custom modules
 const s3 = require('../utilities/s3Utilities')
@@ -18,13 +18,12 @@ setupSystem()
 /*
  * Create necessary storage containers
  */
-function setupSystem() {
-
+function setupSystem () {
   // bucket for which put operation triggers lambda
   p1 = s3.createBucket(name)
 
   // create table to store users information
-  p2 = ddb.createTable(name,"USER_ID")
+  p2 = ddb.createTable(name, 'USER_ID')
 
   // create collection for indexed faces
   p3 = rk.createCollection(name)
@@ -35,8 +34,8 @@ function setupSystem() {
       console.log(data)
     })
     .catch((err) => {
-      console.log("Couldn't build system. Name may be taken.",err)
+      console.log("Couldn't build system. Name may be taken.", err)
     })
 }
 
-//TODO: may want to setup conversations here with some function??
+// TODO: may want to setup conversations here with some function??
