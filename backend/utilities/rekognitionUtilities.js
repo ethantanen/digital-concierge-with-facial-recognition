@@ -4,7 +4,7 @@
  */
 
 // Published modules
-AWS = require('aws-sdk')
+const AWS = require('aws-sdk')
 
 AWS.config.update({
   region: 'us-east-1'
@@ -52,8 +52,8 @@ function indexFaces (collection, bucket, image) {
       }
     },
     DetectionAttributes: [
-      "ALL",
-    ],
+      'ALL'
+    ]
   }
   return new Promise((resolve, reject) => {
     rk.indexFaces(params, (err, data) => {
@@ -107,12 +107,12 @@ function searchFacesByImage (collection, bucket, image) {
 }
 
 // Delete Faces
-function deleteFaces(collection, id) {
+function deleteFaces (collection, id) {
   var params = {
-   CollectionId: collection,
-   FaceIds: [
-      id,
-   ]
+    CollectionId: collection,
+    FaceIds: [
+      id
+    ]
   }
   return new Promise((resolve, reject) => {
     rk.deleteFaces(params, (err, data) => {
@@ -123,7 +123,7 @@ function deleteFaces(collection, id) {
 }
 
 // Detect Faces (emotions, features, etc)
-function detectFaces(bucket, image) {
+function detectFaces (bucket, image) {
   var params = {
     Image: {
       S3Object: {
@@ -132,13 +132,13 @@ function detectFaces(bucket, image) {
       }
     },
     Attributes: [
-      "ALL",
+      'ALL'
     ]
   }
   return new Promise((resolve, reject) => {
     rk.detectFaces(params, (err, data) => {
-        if (err) return reject(err)
-        return resolve(data)
+      if (err) return reject(err)
+      return resolve(data)
     })
   })
 }
@@ -152,5 +152,5 @@ module.exports = {
   searchFaces: searchFaces,
   searchFacesByImage: searchFacesByImage,
   deleteFaces: deleteFaces,
-  detectFaces: detectFaces,
+  detectFaces: detectFaces
 }

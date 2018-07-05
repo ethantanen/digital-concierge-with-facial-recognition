@@ -1,25 +1,33 @@
 /*
- * This is the main controller for Calvin.
- * This file receives the call from the lambda function
- * and redirects the response accordingly. That is, it
- * determines if the image from lambda is in fact a user
- * and executes conversation protocol accordingly.
+ * This is the main controller for Calvin. It is responsible
+ * for validating users, managing their session and curating
+ * conversation experiences.
  */
 
+ /*
+  * TODO: add cookies with time limit that adds a few minutes each time
+  * the users makes a request. The state of the users experience (facial
+  * features, authorization information, account information?) should be
+  * stored in a temporary data structure that exists only for the duration
+  * of the interaction. Make middleware that determines if a user is authenticated
+  * and request authentication if the user is not.
+  */
+
 // Published modules
-bodyParser = require('body-parser')
-express    = require('express')
-formidable = require('formidable')
-fs         = require('fs')
-request    = require('request-promise')
-https      = require('https')
+const bodyParser = require('body-parser')
+const express    = require('express')
+const formidable = require('formidable')
+const fs         = require('fs')
+const https      = require('https')
+const cors       = require('cors')
 
 // Custom modules
-recc     = require('./recognitionController')
-s3       = require('./utilities/s3Utilities')
-ply      = require('./utilities/pollyUtilities')
-register = require('./utilities/register')
-ddb      = require('./utilities/dynamoDBUtilities')
+const recc     = require('./recognitionController')
+const addUser  = require('./addUserController')
+const s3       = require('./utilities/s3Utilities')
+const ply      = require('./utilities/pollyUtilities')
+const ddb      = require('./utilities/dynamoDBUtilities')
+const lex      = require('./utilities/lexRuntimeUtilities')
 
 /********************************************************
               Application/ Environment Setup
@@ -29,184 +37,120 @@ ddb      = require('./utilities/dynamoDBUtilities')
 const NAME = process.env.NAME
 
 /*
- * Create express app, add middleware, set view engine
- * and static file directory
+ * Create express app, add middleware and static
+ * file directory
  */
 app = express()
-app.set('view engine', 'ejs');
-app.set('views',__dirname + "/static/views")
-app.use(express.static(__dirname + '/static'))
 app.use(bodyParser({limit:"50mb"}))
+app.use(cors())
 
+var server = app.listen(3000, function (err) {
+  if (err) return console.log('Couldn\'t start server")
+  var host = server.address().address;
+  var port = server.address().port;
+  console.log('Example app listening at http://%s:%s', host, port);
+});
+
+/********************************************************
+              Custom Middleware
+********************************************************/
+//NOTE: Not functional yet!
+// Check to see if the user is authorized to make a request
 /*
- * NOTE: openssl req -nodes -new -x509 -keyout server.key -out server.cert
- * --> use this to generate a self signed certificate
- */
- // Begin https server on port 3000
-https.createServer({
-  key: fs.readFileSync('./encryption/server.key'),
-  cert: fs.readFileSync('./encryption/server.cert')
-},app)
-.listen(3000, (err) => {
-  if (err) return console.log("Can't connect to port 3000.",err)
-  return console.log("Listening on port 3000")
+app.use(async (req, res, next) => {
+  cookie = req.cookies.auth
+  if (cookie) {
+    next()
+  } else {
+    stream = await talk ("It appears you are not authorized to continue. If you are a returning user\
+      please authenticate yourself with an image of yourself. If your are not a returning user please\
+      join by clicking the add user button!")
+    res.send({audio: stream})
+  }
+  */
 })
 
 /********************************************************
-              Application Routing
+                Add User
 ********************************************************/
+app.post("/addUser", async (req, res) => {
 
-// Home page endpoint
-app.get("/", (req, res) => {
-  res.render("index.ejs", {})
+  try {
+
+    meta = req.body.meta
+    image = new Buffer(req.body.image.split(',')[1],"base64")
+
+    // add image to bucket
+    await s3.putObject64(NAME, image, "img.jpeg")
+
+    // add user to database
+    user = await addUser.addUser(NAME, NAME, "img.jpeg", meta)
+    res.send({audio: await talk(user.name + "added to the system.")})
+  } catch (err) {
+    console.log(err)
+    res.send({audio: await talk('I was unable to add you to the system.')})
+  }
+
 })
 
-// Endpoint for facial recognition
-app.post("/s3", (req,res) =>{
+/********************************************************
+              Facial Recognition/ Authentication
+********************************************************/
+
+//TODO: generate auth id, set cookie and create entry in conversation context list of some sort
+// Endpoint for facial recognition/ authentication
+app.post("/authenticate", async (req,res) => {
 
   // get base-64 encoded image from request
-  buf = new Buffer(req.body.info.split(",")[1], "base64")
+  buf = new Buffer(req.body.image.split(",")[1], "base64")
 
-  // put object in s3 bucket before recognition analysis
-  return s3.putObject64(NAME,buf,"img.jpeg")
-    .then((data) => {
-      /*
-       * execute recognition only after the image
-       * is successfully placed in the Bucket
-       */
-     determineIsUser(NAME, NAME, 'img.jpeg')
-        .then((data) => {
-          res.send({})
-      })
-     })
-    .catch((err) => {
-       console.log(err)
-       res.send({error: "Error with recognition"})
-     })
+  // put the base-64 encoded image in the bucket
+  await s3.putObject64(NAME,buf,"img.jpeg")
+  result = await recc.isUserById(NAME, NAME, "img.jpeg")
+
+  //TODO: issue greeting!
+  // NOTE: the result object is described in recognitionController.js
+  if (result.isUser) {
+    //TODO: generate auth id, set cookie, add conversation to context
+    stream = await talk("You are a user.")
+    res.send({audio: stream})
+  } else {
+    stream = await talk("You are not a user.")
+    res.send({audio: stream})
+  }
 })
 
 /********************************************************
-            Adding Conversations to Register
+          Conversation Manager
 ********************************************************/
-var conversations = register.getConversations()
 
-conversations.add("checkin", [["Hello, how are you?","feeling"],["And hows the homestead?","fam"]], function() {
-  return "So your family is " + this.answers.fam + " and your feeling " + this.answers.feeling
-})
-conversations.add("add", [["What's the first number?","num1"],["and what is the second number?","num2"]], function() {
-  return "The sum of " + this.answers.num1 + " and " + this.answers.num2 + " is " +  (parseInt(this.answers.num1) + parseInt(this.answers.num2))
-})
-conversations.add("help", [["Click submit and I'll tell you what I can help with!","num1"]], function() {
-  return "checkin, add, and help"
-})
-conversations.add("favnumber",[["Whats your favorite number?","num"]],function() {
-  num = (Math.floor(Math.random()*100)).toString(2).split("").join(" ")
-  console.log(num)
-  return  this.answers.num + "?  What is that base 10? Hahaha,human scum! My favorite number is" + num
-})
+ // Conversation endpoint
+app.post('/conversation', async (req, res) => {
 
+  // Get users input from request
+  text = req.body.text
 
-// Current conversation information TODO: none of this should be global!!
-var conversation = []
-var term = "stop" // terminate conversation word
-var isTalk = false //boolean for if conversation is in progress
+  //TODO: conversation context will determine the conversation id
+  // Get Calvin's response
+  lexRes = await lex.postText('1234567', text)
 
-// Conversation endpoint
-//TODO: redo all of this cuz it ugly!!!
-app.post('/conversation', (req, res) => {
-    // Users response
-    text = req.body.res
-    // Always terminate if text is the termination string
-    if (text === term) {
-      conversation = []
-      isTalk = false
-      return talk("Darling, this conversation is ending.")
-        .then(() => {
-          res.send({})
-        })
-    } else {
-      // Check if users in a conversation
-      if (!isTalk) {
-        // Conversation hasn't started, check if input is a callword
-        if(Object.keys(conversations.conversations).includes(text)) {
-          // text is a callword and begin the conversation
-          isTalk = true
-          conversation = conversations.conversations[text]
-          talk(conversation.next())
-            .then(()=>{
-              res.send({})
-            })
-        }else{
-          return talk("Please input a valid callword.")
-            .then((data) => {
-              res.send({})
-            })
-        }
-      } else {
-        // Record answer in conversation object
-        conversation.answer(text)
-        // In conversation mode
-        if(conversation.end != true) {
-          //conversations still going
-          talk(conversation.next())
-            .then(()=>{
-              res.send({})
-            })
-        } else {
-          // Orate conversation summary and reset isTalk and conversation variables
-          talk(conversation.summary())
-            .then(() => {
-              conversation = []
-              isTalk = false
-              res.send({})
-            })
-        }
-      }
-    }
+  // Get Calvin's response
+  lexRes = await lex.postText('1234567', lexRes.message)
+
+  // If the discourse is create user and the discource has ended send the meta back to the front
+  if(lexRes.intentName === "CreateUser" && lexRes.dialogState === "Fulfilled"){
+    res.send({audio:lexRes.audioStream, meta: lexRes.slots})
+  } else {
+    res.send({audio: lexRes.audioStream})
+  }
 })
 
 /********************************************************
-              Application Functionality
+              Utility Functions
 ********************************************************/
 
 // Synthesize and record a string
-function talk(text){
-  return ply.synthesizeSpeech(text)
-    .then((data) => {
-      fs.writeFileSync("static/audio/speech.mp3",data.AudioStream)
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-}
-
-// Redirects to the conversation controller
-function determineIsUser(collection, bucket, image) {
-  return new Promise((resolve,reject) => {
-   recc.isUserById(collection,bucket,image)
-    .then((res) => {
-      // treat user differently if they're new or returning
-      console.log(JSON.stringify(res.face,null,2))
-      if(res.isUser) {
-        ddb.getItem(NAME,res.id)
-          .then((data) => {
-
-
-            // TODO: create conversation w/ user entry from table aswell as analysis from rekog.
-            talk("Welcome back! " + data.Item.USER_NAME.S + " its damn good to see u. Lets talk!" + "You look " + JSON.stringify(res.face.FaceDetails[0].Emotions))
-              .then((data) => {
-                return resolve()
-              })
-          })
-      } else {
-        talk("It appears your not a user. Hopefully you will join us in the future! but Lets talk anyway!")
-          .then((data) => {
-            return resolve()
-          })
-      }
-    })
-    .catch((err) => {
-      reject(err)
-    })
-  })
+async function talk(text){
+  data = await ply.synthesizeSpeech(text)
+  return data.AudioStream
 }

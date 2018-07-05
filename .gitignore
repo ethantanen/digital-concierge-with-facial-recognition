@@ -1,3 +1,6 @@
 .DS_Store
 
-node_modules
+<<<<<<< HEAD
+encryption/
+=======
+>>>>>>> 7a6a5ffdc5534cbc7eab50d689e828b45dab91d9

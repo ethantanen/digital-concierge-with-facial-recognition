@@ -54,7 +54,7 @@ function listBuckets () {
 
 // Put Object
 function putObject (bucket, body, key) {
-  params = {
+  var params = {
     Body: body,
     Bucket: bucket,
     Key: key
@@ -69,7 +69,7 @@ function putObject (bucket, body, key) {
 
 // Put Object
 function putObject64 (bucket, buffer, key) {
-  params = {
+  var params = {
     Body: buffer,
     Bucket: bucket,
     Key: key,
@@ -86,7 +86,7 @@ function putObject64 (bucket, buffer, key) {
 
 // Get Object
 function getObject (bucket, key) {
-  params = {
+  var params = {
     Bucket: bucket,
     Key: key
   }
@@ -100,7 +100,7 @@ function getObject (bucket, key) {
 
 // Delete Object
 function deleteObject (bucket, key) {
-  params = {
+  var params = {
     Bucket: bucket,
     Key: key
   }
@@ -114,7 +114,7 @@ function deleteObject (bucket, key) {
 
 // List Objects
 function listObjects (bucket) {
-  params = {
+  var params = {
     Bucket: bucket
   }
   return new Promise((resolve, reject) => {

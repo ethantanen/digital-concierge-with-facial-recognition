@@ -1,8 +1,8 @@
 {
   "name": "calvin",
-  "version": "1.0.0",
-  "description": "",
-  "main": "dynamoDBUtilities.js",
+  "version": "1.0.1",
+  "description": "Calvin! Your digital concierge.",
+  "main": "conversationController.js",
   "scripts": {
     "dev": "nodemon conversationController.js"
   },
@@ -17,16 +17,11 @@
   },
   "homepage": "https://github.com/ethantanen/Facial-Recognition-System#readme",
   "dependencies": {
-    "audio-loader": "^1.0.3",
-    "audio-play": "^2.2.0",
     "aws-sdk": "^2.260.1",
     "body-parser": "^1.18.3",
-    "ejs": "^2.6.1",
+    "cors": "^2.8.4",
     "express": "^4.16.3",
-    "formidable": "^1.2.1",
     "fs": "0.0.1-security",
-    "nodemon": "^1.17.5",
-    "promise": "^8.0.1",
-    "request-promise": "^4.2.2"
+    "nodemon": "^1.17.5"
   }
 }
