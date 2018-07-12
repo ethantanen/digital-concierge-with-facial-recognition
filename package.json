@@ -4,7 +4,7 @@
   "description": "",
   "main": "dynamoDBUtilities.js",
   "scripts": {
-    "dev": "nodemon conversationController.js"
+    "dev": "nodemon app.js"
   },
   "repository": {
     "type": "git",
@@ -17,16 +17,18 @@
   },
   "homepage": "https://github.com/ethantanen/Facial-Recognition-System#readme",
   "dependencies": {
-    "audio-loader": "^1.0.3",
-    "audio-play": "^2.2.0",
     "aws-sdk": "^2.260.1",
     "body-parser": "^1.18.3",
+    "cors": "^2.8.4",
     "ejs": "^2.6.1",
     "express": "^4.16.3",
+    "express-session": "^1.15.6",
     "formidable": "^1.2.1",
     "fs": "0.0.1-security",
+    "morgan": "^1.9.0",
     "nodemon": "^1.17.5",
     "promise": "^8.0.1",
-    "request-promise": "^4.2.2"
+    "request-promise": "^4.2.2",
+    "uuid": "^3.3.2"
   }
 }
