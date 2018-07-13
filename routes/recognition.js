@@ -45,6 +45,7 @@ router.post("/", async (req,res) => {
     id = result.id
     meta = await userTable.getUserClean(id)
 
+    console.log(meta,id)
     // populate users session
     req.session.aid = id
     req.session.meta = JSON.stringify(meta)

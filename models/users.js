@@ -66,7 +66,8 @@ function dynamoClean (entry) {
 async function getUserClean(id) {
   try {
     user = await getUser(id)
-    return dynamoClean (user)
+    console.log(user)
+    return dynamoClean (user.Item)
   } catch (err) {
     return "can't find user"
   }
