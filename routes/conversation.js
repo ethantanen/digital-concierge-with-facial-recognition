@@ -81,6 +81,7 @@ async function lexChat (req, res, next) {
   // check if entries are ready for fulfillment
   if(lexRes.dialogState === 'ReadyForFulfillment') {
     // fulfill request
+    console.log(lexRes.intentName)
     req.session.intent = lexRes.intentName
     fulfiller.fulfill(req, res, next)
   } else {

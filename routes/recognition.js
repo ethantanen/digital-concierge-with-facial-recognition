@@ -49,6 +49,7 @@ router.post("/", async (req,res) => {
     // populate users session
     req.session.aid = id
     req.session.meta = JSON.stringify(meta)
+    req.session.face = result.face
 
     // greet the user
     name = meta.FIRST_NAME
