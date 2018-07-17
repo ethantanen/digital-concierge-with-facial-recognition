@@ -56,6 +56,13 @@ $(document)
    META = null
    SEND_URL = '/authenticate'
 
+   function makeCalvinTextBox(chatText) {
+    var fullTitle = $("<div style='display: block'  class='containerChat'> <img src='venteraLogo.png' alt='Avatar''> <h4 class='textLeft'>" + chatText + "</h4></div>");
+    $('#thingToAppend').append(fullTitle);
+    const objDiv = document.getElementById('scrollList');
+    objDiv.scrollTop = objDiv.scrollHeight;
+   }
+
 
    $('#send')
      .click(() => {
@@ -76,6 +83,8 @@ $(document)
 
        sendData(json, SEND_URL, (res) => {
          playAudio(res.audio.data)
+         makeCalvinTextBox(res.text);
+          
          SEND_URL = '/authenticate'
        })
      })
@@ -115,9 +124,10 @@ $(document)
            SEND_URL = '/adduser'
 
          }
+         makeCalvinTextBox(res.text);
          playAudio(res.audio.data)
-
        })
+
        $('#makeTextBox').trigger("click");
        $("#response").val("");
        const objDiv = document.getElementById('scrollList');
@@ -129,14 +139,7 @@ $(document)
 
        var typedInfo = $('#response').val();
 
-       if (firstAppend) {
-         var fullTitle = $("<div style='display: block'  class='containerChat darkerChat'> <img src='\otherLogo.png' alt='Avatar'  class='rightChat'> <p class='textRight'>" + typedInfo + "</p></div>");
+         var fullTitle = $("<div style='display: block'  class='containerChat darkerChat'> <img src='\otherLogo.png' alt='Avatar'  class='rightChat'> <h4 class='textRight' style='color:white'>" + typedInfo + "</h4></div>");
          $('#thingToAppend').append(fullTitle);
-         firstAppend = false;
-       }
-       else {
-         var fullTitle = $("<div class='containerChat darkerChat'> <img src='\otherLogo.png' alt='Avatar'  class='rightChat'> <p class='textRight'>" + typedInfo + "</p></div>");
-         $('#thingToAppend').append(fullTitle);
-       }
      })
  })
