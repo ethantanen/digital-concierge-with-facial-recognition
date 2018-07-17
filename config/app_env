@@ -1,0 +1,4 @@
+#Bucket, Table and Collections name
+#Change this and run the setup function to reset Calvin
+#export NAME="spassinternsventeracalvin2018personal"
+export NAME="calvinintern2018"

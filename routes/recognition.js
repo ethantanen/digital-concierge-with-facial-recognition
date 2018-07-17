@@ -84,6 +84,7 @@ function isUser64 (collection, buffer) {
 
 // Determine the facial features of the user in the image
 async function detectFacialFeatures64 (buffer) {
+
   var features = await rk.detectFaces64 (buffer)
   return {face: features}
 }

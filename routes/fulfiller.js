@@ -1,37 +1,45 @@
 
-const router = require('express').Router()
 const ply = require('../utilities/polly')
+const apis = require('../apis/index')
 
-router.get('/', async (req, res) => {
-
-
+async function fulfill (req, res, next){
   switch (req.session.intent) {
-
     case 'LogOff':
-      req.session.destroy()
-      stream = await ply.talk('You\'ve been logged off.')
-      res.send({audio: stream, text: 'You\'ve been logged off'})
+      logOff(req, res, next)
       break
-
+    case 'SendEmail':
+      sendEmail(req,res,next)
+      break
+    case 'CheckWeather':
+      break
+    case 'Joke':
+      break
+    case 'SendSlack':
+      //sendSlack()
+      break
     default: res.end()
-
   }
-})
+}
 
-// Destroy session
-router.post('/logoff', async (req, res) => {
-  console.log('hello!')
-  req.session.destory()
-  stream = await ply.talk("hey hey")
-  res.send({audio: stream})
-})
+function logOff(req, res, next) {
+  req.session.destroy()
+  stream = await ply.talk('You\'ve been logged off.')
+  res.send({audio: stream, text: 'You\'ve been logged off'})
+}
 
-
-router.all((req, res) => {
-  console.log(req.baseUrl)
-})
-
+async function sendEmail(req, res, next) {
+  console.log("sendemail", req.session)
+  if (req.session.extendedMessage) {
+    req.session.extendedMessage = false
+    stream = await ply.talk('Ive sent you freakin email')
+    res.send({audio: stream})
+  } else {
+    req.session.extendedMessage = true
+    stream = await ply.talk('What should the email say')
+    res.send({audio: stream})
+  }
+}
 
 module.exports = {
-  router: router,
+  fulfill: fulfill,
 }

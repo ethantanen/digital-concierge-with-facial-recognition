@@ -7,7 +7,7 @@ const lex = new AWS.LexRuntime({
 
 const BOT_NAME = 'Calvin'
 // The bot alias determines the version of calvin
-const BOT_ALIAS = 'Calvin_One'
+const BOT_ALIAS = 'CALVIN_ONE'
 /*
  * Change the content type to switch from
  * text input to audio input

@@ -46,3 +46,7 @@ app.use('/addUser', add.router)
 app.get('/', (req, res) => {
   res.render('index.ejs')
 })
+
+app.use((err, req, res, next) => {
+  console.log(Object.keys(err))
+})
