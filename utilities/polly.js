@@ -20,7 +20,11 @@ function synthesizeSpeech (text) {
     OutputFormat: 'mp3',
     SampleRate: '8000',
     Text: text,
+<<<<<<< HEAD:utilities/polly.js
     VoiceId: 'Matthew'
+=======
+    VoiceId: 'Geraint'
+>>>>>>> eef4620fe9796d4716d4296c2c93a3f4f347a0f2:backend/utilities/pollyUtilities.js
   }
   return new Promise((resolve, reject) => {
     polly.synthesizeSpeech(params, (err, data) => {

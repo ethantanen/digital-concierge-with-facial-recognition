@@ -1,8 +1,8 @@
 {
   "name": "calvin",
-  "version": "1.0.0",
-  "description": "",
-  "main": "dynamoDBUtilities.js",
+  "version": "1.0.1",
+  "description": "Calvin! Your digital concierge.",
+  "main": "conversationController.js",
   "scripts": {
     "dev": "nodemon app.js"
   },
@@ -20,6 +20,7 @@
     "aws-sdk": "^2.260.1",
     "body-parser": "^1.18.3",
     "cors": "^2.8.4",
+<<<<<<< HEAD:package.json
     "ejs": "^2.6.1",
     "express": "^4.16.3",
     "express-session": "^1.15.6",
@@ -31,5 +32,10 @@
     "request": "^2.87.0",
     "request-promise": "^4.2.2",
     "uuid": "^3.3.2"
+=======
+    "express": "^4.16.3",
+    "fs": "0.0.1-security",
+    "nodemon": "^1.17.5"
+>>>>>>> eef4620fe9796d4716d4296c2c93a3f4f347a0f2:backend/package.json
   }
 }
