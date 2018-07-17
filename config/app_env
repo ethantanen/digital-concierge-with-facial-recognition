@@ -1,8 +1,4 @@
 #Bucket, Table and Collections name
 #Change this and run the setup function to reset Calvin
-<<<<<<< HEAD:config/app_env
 #export NAME="spassinternsventeracalvin2018personal"
 export NAME="calvinintern2018"
-=======
-export NAME="internsventeracalvin2018"
->>>>>>> eef4620fe9796d4716d4296c2c93a3f4f347a0f2:backend/app_env

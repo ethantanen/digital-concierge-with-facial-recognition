@@ -54,7 +54,6 @@ function indexFaces (collection, bucket, image) {
     DetectionAttributes: [
       'ALL'
     ]
-<<<<<<< HEAD:utilities/rekognition.js
   }
   return new Promise((resolve, reject) => {
     rk.indexFaces(params, (err, data) => {
@@ -74,8 +73,6 @@ function indexFaces64(collection, buffer) {
     DetectionAttributes: [
       'ALL'
     ]
-=======
->>>>>>> eef4620fe9796d4716d4296c2c93a3f4f347a0f2:backend/utilities/rekognitionUtilities.js
   }
   return new Promise((resolve, reject) => {
     rk.indexFaces(params, (err, data) => {
@@ -171,7 +168,6 @@ function detectFaces (bucket, image) {
     },
     Attributes: [
       'ALL'
-<<<<<<< HEAD:utilities/rekognition.js
     ]
   }
   return new Promise((resolve, reject) => {
@@ -190,8 +186,6 @@ function detectFaces64 (buffer) {
     },
     Attributes: [
       'ALL'
-=======
->>>>>>> eef4620fe9796d4716d4296c2c93a3f4f347a0f2:backend/utilities/rekognitionUtilities.js
     ]
   }
   return new Promise((resolve, reject) => {
@@ -213,9 +207,5 @@ module.exports = {
   searchFacesByImage: searchFacesByImage,
   searchFacesByImage64: searchFacesByImage64,
   deleteFaces: deleteFaces,
-<<<<<<< HEAD:utilities/rekognition.js
   detectFaces64: detectFaces64,
-=======
-  detectFaces: detectFaces
->>>>>>> eef4620fe9796d4716d4296c2c93a3f4f347a0f2:backend/utilities/rekognitionUtilities.js
 }
