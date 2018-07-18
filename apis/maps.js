@@ -1,5 +1,5 @@
 const request = require('request-promise')
-const TOKEN = 'sk.eyJ1IjoiZXRoYW50YW5lbiIsImEiOiJjampyM3VjbGE3eWE3M3ByNXhlaDFiemM3In0.89vMVUCta6IOeTmJFXLokQ'
+const TOKEN = process.env.MAP_TOKEN
 
 // directions
 const mbxDirections = require('@mapbox/mapbox-sdk/services/directions');

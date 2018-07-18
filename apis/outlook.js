@@ -1,11 +1,14 @@
 
 const request = require('request-promise')
 
+// api credentials
 const REFRESH_TOKEN = process.env.REFRESH_TOKEN_GRAPH
-const API_URL = "https://login.microsoftonline.com/common/oauth2/v2.0/token"
 const CLIENT_SECRET = process.env.CLIENT_SECRET_GRAPH
 const CLIENT_ID = process.env.CLIENT_ID_GRAPH
-const REDIRECT_URL = "https://localhost:8000/admin/auth"
+
+// other constant information
+const API_URL = "https://login.microsoftonline.com/common/oauth2/v2.0/token"
+const REDIRECT_URL = "https://localhost:8000/admin/auth" //must register url in graph's app regisstration protal
 const SCOPE =
   "openid+offline_access+profile+https:%2f%2foutlook.office.com%2fmail.readwrite+https:%2f%2foutlook.office.com%2fmail.readwrite.shared+https:%2f%2foutlook.office.com%2fmail.send+https:%2f%2foutlook.office.com%2fmail.send.shared+https:%2f%2foutlook.office.com%2fcalendars.readwrite+https:%2f%2foutlook.office.com%2fcalendars.readwrite.shared+https:%2f%2foutlook.office.com%2fcontacts.readwrite+https:%2f%2foutlook.office.com%2fcontacts.readwrite.shared+https:%2f%2foutlook.office.com%2ftasks.readwrite+https:%2f%2foutlook.office.com%2ftasks.readwrite.shared+https:%2f%2foutlook.office.com%2fmailboxsettings.readwrite+https:%2f%2foutlook.office.com%2fpeople.read+https:%2f%2foutlook.office.com%2fuser.readbasic.all"
 
@@ -16,7 +19,7 @@ async function sendEmail(sender, recipient, message) {
             "Subject": "CALVIN: Message from " + sender,
             "Body": {
               "ContentType": "Text",
-              "Content": message
+               "Content": message
             },
             "ToRecipients": [
               {
@@ -47,27 +50,6 @@ async function sendEmail(sender, recipient, message) {
     })
     .catch((err) => {
       //console.log("Error Sending Email", JSON.stringify(err,null,1))
-    })
-}
-
-// TODO: format messages for response!
-// NOTE: get mails has no context within the scope of this application
-async function getMail() {
-  token = await getAccessToken()
-  options = {
-    method: 'GET',
-    url: "https://outlook.office.com/api/v2.0/me/mailfolders/inbox/messages?&$top=1",
-    headers: {
-      Authorization: 'Bearer ' + token
-    },
-    json: true
-  }
-  request(options)
-    .then((data) => {
-      console.log(JSON.stringify(data,null,1))
-    })
-    .catch((err) => {
-      console.log(err)
     })
 }
 
@@ -112,6 +94,7 @@ async function createMeeting(organizer, attendees, start, end) {
     },
     body: JSON.stringify(msg)
   }
+
   request(options)
     .then((data) => {
       console.log(data)

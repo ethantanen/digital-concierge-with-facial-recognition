@@ -38,7 +38,7 @@ async function searchWiki(text) {
 }
 
 async function getTheNews() {
-  token="631d476fb17445edb9457c12e4d5bd5c"
+  token=process.env.NEWS
   url = "https://newsapi.org/v2/top-headlines?country=us&apiKey="+token
   json = await request({url: url, json:true})
   index = Math.floor(Math.random(json.totalResults))
@@ -56,7 +56,7 @@ async function getQuoteOfTheDay() {
 }
 
 async function getRecipe(keyword) {
-  key = "27809da9a5e69c00930e737072e73bfa";
+  key = process.env.RECIPE
 
   // query database
   search = "http://food2fork.com/api/search?q=" + keyword + "&key=" + key
@@ -108,5 +108,5 @@ module.exports = {
   getRecipe: getRecipe,
   getJoke: getJoke,
   getWeather: getWeather,
-  
+
 }
