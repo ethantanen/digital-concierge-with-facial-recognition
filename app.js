@@ -11,6 +11,7 @@ const cors       = require('cors')
 const rec = require('./routes/recognition')
 const con = require('./routes/conversation')
 const add = require('./routes/addUser')
+const admin = require('./routes/admin')
 
 // create app
 app = express()
@@ -41,6 +42,7 @@ https.createServer({
 app.use('/authenticate', rec.router)
 app.use('/conversation', con.router)
 app.use('/addUser', add.router)
+app.use('/admin', admin.router)
 
 // render homescreen
 app.get('/', (req, res) => {

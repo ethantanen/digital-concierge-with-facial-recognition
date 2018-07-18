@@ -1,4 +1,11 @@
-#Bucket, Table and Collections name
-#Change this and run the setup function to reset Calvin
-#export NAME="spassinternsventeracalvin2018personal"
-export NAME="calvinintern2018"
+# AWS bucket, table, etc name
+export NAME="thecalvinintern2018"
+
+# Outlook credentials
+export REFRESH_TOKEN_GRAPH="MCQq411oimlv8cULJPJLPxoz2ISRW5hyYZvL1c9DdBTjFdL2RFam4Jp6PDti6rohaHlUFOQ93IKdsgoOa*ZMX!xCgRPJXd3e0Htb7O!mQdnjjdI8qoseGSzcRxgktA*eDQeFQsAvL*ffgTLi2kSI0mSbZiGQT5SOgO0SKcTw2II!QzZt9TUpU1vaUnA7G1Qp0cXfHHjbKfzYg9H93sNuXauC6MWYb6sGPGn0DmMvic36eIUAcsUiakepLGbZ2z7ghtAo3!GTOkcJLe1aIiYdOmnE02ouIG!C9zWm*WeznoDA2TBmxXJVKE3M9OITzP9omb1YlnVXgbkV0sOL1VGVZqmSSzVTHU*qQQ20Y5eaQTLy2YfjSEV5xAMwjWj7Nq9w7OSMvnX5nuie4toJmf4rzRXN3b0uCUW32wSOnv!oL1Q1wW3rAD2zZwp*ZypK0ksB9!qMCXrmhxOnkKuYcvIDqEwl!LgRyhMbev9L2KLOL9ZePq0YNzkG1yIVyevnRA0BZepDZlLzdTUNHTQCUwtWXrK8*FaJXuodGcrz4P4Gxxj1rzKFWdOSvOg8UblQco2*01NyCQ8HMGUh9LNJegXZCyt1m7pfCQ*MCYhmi0JROLPFp!BvDFXlqFhw5G1!v1SoOeQ\$\$"
+export CLIENT_SECRET_GRAPH="kvqgC234}}yozAQPDCZ44-;"
+export CLIENT_ID_GRAPH="3f81fd16-e587-4fe7-b1df-2b6c8c299cb6"
+
+# Admin page credentials
+export ADMIN_USERNAME='interns'
+export ADMIN_PASSWORD='2018'

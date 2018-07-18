@@ -54,18 +54,15 @@ async function guest(req, res, next) {
   if(guestPermissions.includes(lexRes.intentName)) {
     // return meta data if CreateUser intent is finished gathering information
     if(lexRes.intentName === 'AddUser' && lexRes.dialogState === 'Fulfilled') {
-      response = "Please send me an image to complete the registration process."
-      stream = await ply.talk(response)
-      res.send({audio: stream, text: response, meta: lexRes.slots})
+      response = "Please send me an image to complete the registration process. You will need to send the image after signup is complete to login."
+      send(req, res, next, response)
     } else {
-      stream = await ply.talk(lexRes.message)
-      res.send({audio: stream, text: lexRes.message})
+      send(req, res, next, lexRes.message)
     }
   } else {
     // return a message that ellicits the users login or account creation
-    response = "It appears that you do not have permission to make that request. Please login or create an account to access."
-    stream = await ply.talk(response)
-    res.send({audio: stream, text: response})
+    response = "It appears that you do not have permission to make that request. Please login or create an account to access. To login, please snap and then send a photo. To create an account type 'signup'"
+    send(req, res, next, response)
   }
 }
 
@@ -81,14 +78,18 @@ async function lexChat (req, res, next) {
   // check if entries are ready for fulfillment
   if(lexRes.dialogState === 'ReadyForFulfillment') {
     // fulfill request
-    console.log(lexRes.intentName)
     req.session.intent = lexRes.intentName
+    req.session.slots = lexRes.slots
     fulfiller.fulfill(req, res, next)
   } else {
     //send lex's response back to user
-    stream = await ply.talk(lexRes.message)
-    res.send({audio: stream, text: lexRes.message})
+    send(req, res, next, lexRes.message)
   }
+}
+
+async function send(req, res, next, text) {
+  stream = await ply.talk(text)
+  res.send({audio: stream, text: text})
 }
 
 module.exports = {
