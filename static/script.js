@@ -15,18 +15,44 @@ $(document)
        });
    }
 
+   // Get the modal
+var modal = document.getElementById('myModal');
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal 
+btn.onclick = function() {
+    modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
    // Elements for taking and displaying the snapshot
    var canvas = document.getElementById('canvas');
    var context = canvas.getContext('2d');
    var video = document.getElementById('videos');
    var image = document.getElementById('bulldog');
 
-   context.drawImage(image, 0, 0, 400, 300);
+   context.drawImage(image, 0, 0, 300, 210);
 
    // Trigger take photo
    document.getElementById("snap")
      .addEventListener("click", function() {
-       context.drawImage(video, 0, 0, 400, 300)
+       context.drawImage(video, 0, 0, 300, 210)
      });
 
    // Play speech.mp3 file

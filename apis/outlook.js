@@ -127,7 +127,6 @@ function getAccessToken() {
 
 module.exports = {
   sendEmail: sendEmail,
-  getMail: getMail,
   createMeeting: createMeeting,
 
 }
