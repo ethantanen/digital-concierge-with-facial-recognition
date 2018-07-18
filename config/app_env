@@ -1,4 +1,4 @@
-# AWS bucket, table, etc name
+#AWS bucket, table, etc name
 export NAME="thecalvinintern2018"
 
 # Outlook credentials
@@ -9,3 +9,13 @@ export CLIENT_ID_GRAPH="3f81fd16-e587-4fe7-b1df-2b6c8c299cb6"
 # Admin page credentials
 export ADMIN_USERNAME='interns'
 export ADMIN_PASSWORD='2018'
+
+# Random api credentials
+export NEWS="631d476fb17445edb9457c12e4d5bd5c"
+export RECIPE="27809da9a5e69c00930e737072e73bfa"
+
+# Mapbox credentials
+export MAP_TOKEN="sk.eyJ1IjoiZXRoYW50YW5lbiIsImEiOiJjampyM3VjbGE3eWE3M3ByNXhlaDFiemM3In0.89vMVUCta6IOeTmJFXLokQ"
+
+# Slack credentials
+export SLACK_TOKEN="xoxp-366481641941-370889279687-400098192434-23a8ce00a7dbd4fef256cb768bb5d546"
