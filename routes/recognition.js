@@ -15,8 +15,9 @@ const NAME = process.env.NAME
  */
 router.use( async (req, res, next) => {
   if (req.session.aid) {
-    stream = await ply.talk('It appears that you are already logged in. Please log off if you don\'t believe this to be the case')
-    res.send({audio: stream})
+    text = 'It appears that you are already logged in. Please log off if you don\'t believe this to be the case'
+    stream = await ply.talk(text)
+    res.send({audio: stream, text: text })
   } else {
     next()
   }
@@ -53,15 +54,17 @@ router.post("/", async (req,res) => {
 
     // greet the user
     name = meta.FIRST_NAME
-    stream = await ply.talk(name + " welcome back!")
+    text = name + " welcome back!"
+    stream = await ply.talk(text)
 
-    res.send({audio: stream})
+    res.send({audio: stream, text: text})
 
   } else {
 
     // inform client that they are not in the system
-    stream = await ply.talk("You are not a user. Please sign up if you would like to continue our conversation.")
-    res.send({audio: stream})
+    text = "You are not a user. Please sign up if you would like to continue our conversation."
+    stream = await ply.talk(text)
+    res.send({audio: stream, text: text})
 
   }
 })
