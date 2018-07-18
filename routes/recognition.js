@@ -56,6 +56,7 @@ router.post("/", async (req,res) => {
     name = meta.FIRST_NAME
     text = name + " welcome back!"
     stream = await ply.talk(text)
+
     res.send({audio: stream, text: text})
 
   } else {
@@ -87,7 +88,6 @@ function isUser64 (collection, buffer) {
 
 // Determine the facial features of the user in the image
 async function detectFacialFeatures64 (buffer) {
-
   var features = await rk.detectFaces64 (buffer)
   return {face: features}
 }

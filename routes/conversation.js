@@ -54,8 +54,9 @@ async function guest(req, res, next) {
   if(guestPermissions.includes(lexRes.intentName)) {
     // return meta data if CreateUser intent is finished gathering information
     if(lexRes.intentName === 'AddUser' && lexRes.dialogState === 'Fulfilled') {
-      response = "Please send me an image to complete the registration process. You will need to send the image after signup is complete to login."
-      send(req, res, next, response)
+      response = "Please send me an image to complete the registration process. You will need to send the image after signup is complete to login"
+      stream = await ply.talk(response)
+      res.send({audio: stream, text: response, meta: lexRes.slots})
     } else {
       send(req, res, next, lexRes.message)
     }
