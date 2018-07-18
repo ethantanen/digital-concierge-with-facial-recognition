@@ -49,7 +49,7 @@ router.post("/", async (req,res) => {
     console.log(meta,id)
     // populate users session
     req.session.aid = id
-    req.session.meta = JSON.stringify(meta)
+    req.session.meta = meta
     req.session.face = result.face
 
     // greet the user

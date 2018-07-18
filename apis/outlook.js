@@ -47,9 +47,11 @@ async function sendEmail(sender, recipient, message) {
   // send email and log errors
   request(options)
     .then((data) => {
+      console.log("sent email")
     })
     .catch((err) => {
-      //console.log("Error Sending Email", JSON.stringify(err,null,1))
+      console.log("sent email")
+      console.log("Error Sending Email", JSON.stringify(err,null,1))
     })
 }
 
@@ -106,7 +108,6 @@ async function createMeeting(organizer, attendees, start, end) {
 
 function getAccessToken() {
   link = 'grant_type=refresh_token&refresh_token=' + REFRESH_TOKEN + '&scope=' + SCOPE + '&redirect_uri=' + REDIRECT_URL + '&client_id=' + CLIENT_ID + '&client_secret=' + CLIENT_SECRET
-  console.log(link)
   options = {
     method: 'POST',
     url: API_URL,
@@ -127,7 +128,6 @@ function getAccessToken() {
 
 module.exports = {
   sendEmail: sendEmail,
-  getMail: getMail,
   createMeeting: createMeeting,
 
 }

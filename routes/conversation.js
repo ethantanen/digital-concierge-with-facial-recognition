@@ -43,6 +43,7 @@ function user (req, res, next) {
 }
 
 async function guest(req, res, next) {
+
   // grab conversation information
   id = req.session.guestaid
   text = req.body.text

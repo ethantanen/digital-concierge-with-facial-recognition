@@ -7,9 +7,6 @@ async function fulfill (req, res, next){
     case 'LogOff':
       logOff(req, res, next)
       break
-    case 'SendEmail':
-      sendEmail(req,res,next)
-      break
     case 'CheckWeather':
       getWeather(req, res, next, req.session.slots.LOCATION)
       break
@@ -19,23 +16,14 @@ async function fulfill (req, res, next){
     case 'Joke':
       getJoke(req, res, next)
       break
-    case 'SendSlack':
-      //sendSlack()
-      break
     case 'Emotions':
       emotions(req, res, next)
       break
-    case 'ChuckNorrisFact':
-      getChuckNorrisFact(req, res, next)
-      break
-    case 'getRonSwansonQuote':
+    case 'RonSwansonQuote':
       getRonSwansonQuote(req, res, next)
       break
     case 'GetTimeToDest':
       getTimeToDest(req, res, next, req.session.slots.Location)
-      break
-    case 'Help':
-      help()
       break
     case 'QuoteOfTheDay':
       getQuoteOfTheDay(req, res, next)
@@ -43,7 +31,12 @@ async function fulfill (req, res, next){
     case 'ISSLocation':
       getISSLocation(req, res, next)
       break
-
+    case 'SendSlack':
+      sendSlackMessage(req, res, next)
+      break
+    case 'SendEmail':
+      sendOutlookEmail(req, res, next)
+      break
     default: send(req, res, next, "Sorry, I dont believe I can help with that right now. Please try again in the future or rephrase your intent.")
   }
 }
@@ -51,7 +44,7 @@ async function fulfill (req, res, next){
 // get ron swanson quote from the infamous televsion show parks and recreation
 async function getRonSwansonQuote(req, res, next) {
   json = await apis.getRonSwansonQuote()
-  send(req, res, next, json.txt)
+  send(req, res, next, json.text)
 }
 
 // get a random new article
@@ -74,15 +67,8 @@ async function getRecipe(req, res, next, food) {
   res.send({audio: stream, text: json.extras})
 }
 
-// get a chuck norris joke
-async function getChuckNorrisFact(req, res, next) {
-  json = await apis.getChuckNorrisFact()
-  send(req, res, next, json.text)
-}
-
 // returns the number of minutes from ventera to a location
 async function getTimeToDest(req, res, next, location) {
-  console.log(location)
   json = await apis.getTimeDest(location)
   send(req, res, next, json.text)
 }
@@ -90,13 +76,11 @@ async function getTimeToDest(req, res, next, location) {
 // get the quote of the day!
 async function getQuoteOfTheDay(req, res, next) {
   json = await apis.getQuoteOfTheDay()
-  console.log(json)
   send(req, res, next, json.text)
 }
 
 // get the weather for a particular location
 async function getWeather(req, res, next, location) {
-  console.log(location)
   json = await apis.getWeather(location)
   stream = await ply.talk(json.text)
   res.send({audio: stream, text: json.extras})
@@ -107,17 +91,29 @@ async function getWeather(req, res, next, location) {
 async function logOff(req, res, next) {
   req.session.destroy()
   send(req, res, next,'You have been logged off.')
-
 }
 
 // calvin sends an email
-async function sendEmail(req, res, next) {
+async function sendSlackMessage(req, res, next) {
   if (req.session.extendedMessage) {
     req.session.extendedMessage = false
+    json = await apis.sendSlackMessage(req.session.slots.CHANNEL, req.session.msg)
+    send(req, res, next, 'I have sent your message.')
+  } else {
+    req.session.extendedMessage = true
+    send(req, res, next, 'What should the message say?')
+  }
+}
+
+// send an email using outlook woo!
+async function sendOutlookEmail(req, res, next) {
+  if (req.session.extendedMessage) {
+    req.session.extendedMessage = false
+    json = await apis.sendEmail(req.session.meta.FIRST_NAME + " " + req.session.meta.LAST_NAME,req.session.slots.RECIPIENT, req.session.msg)
     send(req, res, next, 'I have sent your email.')
   } else {
     req.session.extendedMessage = true
-    send(req, res, next, 'What should the email say?')
+    send(req, res, next, 'What should the message say?')
   }
 }
 

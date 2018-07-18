@@ -1,11 +1,12 @@
 const outlook = require('./outlook')
 const maps = require('./maps')
 const random = require('./random')
+const slack = require('./slack')
 
 module.exports = {
 
-  
-  sendMail: outlook.sendMail,
+
+  sendEmail: outlook.sendEmail,
   getMail: outlook.getMail,
   createMeeting: outlook.createMeeting,
   getTimeDest: maps.getTimeDest,
@@ -19,6 +20,7 @@ module.exports = {
   getRecipe: random.getRecipe,
   getJoke: random.getJoke,
   getWeather: random.getWeather,
+  sendSlackMessage: slack.postMessage,
 
   // help
   // dict
