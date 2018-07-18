@@ -54,7 +54,7 @@ async function guest(req, res, next) {
   if(guestPermissions.includes(lexRes.intentName)) {
     // return meta data if CreateUser intent is finished gathering information
     if(lexRes.intentName === 'AddUser' && lexRes.dialogState === 'Fulfilled') {
-      response = "Please send me an image to complete the registration process."
+      response = "Please send me an image to complete the registration process. You will need to send the image after signup is complete to login"
       stream = await ply.talk(response)
       res.send({audio: stream, text: response, meta: lexRes.slots})
     } else {
@@ -63,7 +63,7 @@ async function guest(req, res, next) {
     }
   } else {
     // return a message that ellicits the users login or account creation
-    response = "It appears that you do not have permission to make that request. Please login or create an account to access."
+    response = "It appears that you do not have permission to make that request. Please login or create an account to access. To login, please snap and then send a photo. To create an account type 'signup'"
     stream = await ply.talk(response)
     res.send({audio: stream, text: response})
   }
