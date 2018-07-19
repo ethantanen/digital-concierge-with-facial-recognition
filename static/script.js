@@ -80,7 +80,7 @@ window.onclick = function(event) {
    function makeTextBox() {
        var typedInfo = $('#response').val();
 
-         var fullTitle = $("<div style='display: block'  class='containerChat darkerChat'> <img src='\otherLogo.png' alt='Avatar'  class='rightChat'> <h4 class='textRight' style='color:white'>" + typedInfo + "</h4></div>");
+         var fullTitle = $("<div style='display: block'  class='containerChat darkerChat'> <img src='otherLogo.png' alt='Avatar'  class='rightChat'> <h4 class='textRight' style='color:white'>" + typedInfo + "</h4></div>");
          $('#thingToAppend').append(fullTitle);
      }
 
@@ -88,7 +88,7 @@ window.onclick = function(event) {
    SEND_URL = '/authenticate'
 
    function makeCalvinTextBox(chatText) {
-    var fullTitle = $("<div style='display: block'  class='containerChat'> <img src='venteraLogo.png' alt='Avatar''> <h4 class='textLeft'>" + chatText + "</h4></div>");
+    var fullTitle = $("<div style='display: block'  class='containerChat'> <img src='venteraLogo.jpg' alt='Avatar''> <h4 class='textLeft'>" + chatText + "</h4></div>");
     $('#thingToAppend').append(fullTitle);
     const objDiv = document.getElementById('scrollList');
     objDiv.scrollTop = objDiv.scrollHeight;
