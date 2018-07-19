@@ -6,8 +6,6 @@
   <link rel="stylesheet" href="bootstrap.css">
   <link rel="stylesheet" href="style.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://www.desmos.com/api/v1.1/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
-
   <script src="script.js"></script>
 </head>
 
@@ -45,7 +43,7 @@
         <!-- Respond to Prompts Form -->
         <div id="response-box">
           <div id="scrollList" style="width:100%;height:390px;overflow-y: auto; flex-grow: 1">
-            <li id="thingToAppend"></li>
+            <li id="thingToAppend" style="list-style: none;"></li>
           </div>
         </div>
       </div>
@@ -67,38 +65,7 @@
   </div>
   </div>
   </div>
-  <!-- Trigger/Open The Modal -->
-<button id="myBtn">Help</button>
-
-<!-- The Modal -->
-<div id="helpModal" class="helpModal">
-
-  <!-- Modal content -->
-  <div class="helpModal-content">
-    <span class="close">&times;</span>
-    <h2>Calvin Commands:</h2>
-    <ul>
-      <li>Sign Up</li>
-      <li>Calvin Age</li>
-      <li>Check Weather</li>
-      <li>Emotion Detection</li>
-      <li>Time to Destination</li>
-      <li>ISS Location</li>
-      <li>Joke</li>
-      <li>Origin</li>
-      <li>Quote Of the Day</li>
-      <li>Random Number Fact</li>
-      <li>Recipe</li>
-      <li>Ron Swanson Quote</li>
-      <li>Wiki Search</li>
-      <li>Send Email</li>
-      <li>Send Slack Message</li>
-      <li>News</li>
-      <li>Ventera Info</li>
-    </ul>
-  </div>
-
-</div>
+  <button style="display: none" id="makeTextBox"></button>
   <audio id="audio"> </audio>
 </body>
 
