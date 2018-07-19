@@ -30,7 +30,7 @@
           </div>
           <div class="photo">
             <canvas id="canvas" width=277 height=204></canvas>
-            <img id="bulldog" src="venteraLogo.jpg"></img>
+            <img id="bulldog" src="bulldog.jpg"></img>
           </div>
           <div id="buttons">
             <button id="snap" class="btn btn-primary">Snap Photo</button>
@@ -44,6 +44,10 @@
         <div class="row">
           <!-- Respond to Prompts Form -->
           <img id="bull" alt="bulldog" src="bulldog.png">
+          <!-- Trigger/Open The Modal -->
+          <button id="myBtn">
+            <strong>i</strong>
+          </button>
           <div id="response-box">
             <div id="scrollList" style="width:100%;height:390px;overflow-y: auto; flex-grow: 1">
               <li id="thingToAppend" style="list-style: none;"></li>
@@ -51,48 +55,69 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+          <div class="col-xs-11 col-sm-9 col-md-9 col-lg-9">
             <input id="response" autocomplete="off" name="text" type="text" class="form-control" placeholder="Talk to Calvin">
           </div>
-          <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+          <div class="col-xs-8 col-xs-offset-1 col-sm-3 col-sm-offset-0 col-md-3 col-md-offset-0 col-lg-3 col-lg-offset-0">
             <button id="conversation" type="submit" class="btn btn-success">Submit</button>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <!-- Trigger/Open The Modal -->
-  <button id="myBtn">
-    <strong>i</strong>
-  </button>
+
 
   <!-- The Modal -->
   <div id="helpModal" class="modal">
 
     <!-- Modal content -->
     <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2>Calvin Commands:</h2>
-      <ul>
-        <li>Sign Up</li>
-        <li>Calvin Age</li>
-        <li>Check Weather</li>
-        <li>Emotion Detection</li>
-        <li>Time to Destination</li>
-        <li>ISS Location</li>
-        <li>Joke</li>
-        <li>Origin</li>
-        <li>Quote Of the Day</li>
-        <li>Random Number Fact</li>
-        <li>Recipe</li>
-        <li>Ron Swanson Quote</li>
-        <li>Wiki Search</li>
-        <li>Send Email</li>
-        <li>Send Slack Message</li>
-        <li>News</li>
-        <li>Ventera Info</li>
-      </ul>
+      <div class="row" id="heading">
+        <span class="close">&times;</span>
+        <h2>Calvin Commands:</h2>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <ul>
+            <li>Sign Up</li>
+            <li>Calvin Age</li>
+            <li>Check Weather</li>
+            <li>Emotion Detection</li>
+            <li>Time to Destination</li>
+            <li>ISS Location</li>
+            <li>Joke</li>
+            <li>Origin</li>
+            <li>Quote Of the Day</li>
+          </ul>
+        </div>
+        <div class="col-sm-4">
+          <ul>
+            <li>Random Number Fact</li>
+            <li>Recipe</li>
+            <li>Ron Swanson Quote</li>
+            <li>Wiki Search</li>
+            <li>Send Email</li>
+            <li>Send Slack Message</li>
+            <li>News</li>
+            <li>Ventera Info</li>
+            <li>Translate</li>
+          </ul>
+        </div>
+        <div class="col-sm-4">
+          <ul>
+            <li>Dictionary</li>
+            <li>Download Repo</li>
+            <li>Find Email</li>
+            <li>Find Job Title</li>
+            <li>Find Last Name</li>
+            <li>Love Calculator</li>
+            <li>Random Quote</li>
+            <li>Restaurant</li>
+          </ul>
+        </div>
+      </div>
     </div>
+  </div>
 
   </div>
   <button style="display: none" id="makeTextBox"></button>
