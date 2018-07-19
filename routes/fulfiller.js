@@ -1,9 +1,10 @@
 
 const ply = require('../utilities/polly')
 const apis = require('../apis/index')
+const users = require('../models/users')
 
 async function fulfill (req, res, next){
-
+  console.log(req.session.intent)
   // intents for which only data is retrieved (no additional paramters or function calls)
   info = {
     'Joke': apis.getJoke,
@@ -25,6 +26,9 @@ async function fulfill (req, res, next){
     'SearchWiki': searchWiki,
     'TheNews': getTheNews,
     'DownloadRepo': downloadRepo,
+    'FindEmail': getUsersByName,
+    'FindJobTitle': getUsersByPosition,
+    'FindLastName': getUsersByName,
   }
 
   // fulfill intent or issue no intent found message
@@ -64,7 +68,7 @@ async function getTheNews(req, res, next) {
 
 // get a saucy recipe
 async function getRecipe(req, res, next) {
-  json = await apis.getRecipe(eq.session.slots.foodDish)
+  json = await apis.getRecipe(req.session.slots.foodDish)
   stream = await ply.talk(json.text)
   res.send({audio: stream, text: json.extras})
 }
@@ -144,20 +148,42 @@ async function send(req, res, next, text) {
   res.send({audio: stream, text: text})
 }
 
-// create graphing calculator getContext
-async function grapher(req, ers, next) {
-  extras =
-  '<div id="calculator" style="width:400; height:200px;"></div>' +
-  '<script>' +
-    ""
-    "var elt = document.getElementById('calculator'); elt.keypad=false" +
-    "var calculator = Desmos.GraphingCalculator(elt);" +
-    "calculator.setExpression({id:'graph1', latex:'y=x^2'});" +
-  '</script>'
-  text = await ply.talk("STUFF")
-  console.log(extras)
-  res.send({audio: text , text: extras})
+// query the database for a user with the provided name
+async function getUsersByName(req, res, next) {
+
+  name = req.session.slots.firstName
+  list = await users.scanUsersByName(name)
+
+  if (list.length == 0) return send(req, res, next, "I could not find anyone named " + name)
+
+  text = "The first person with the name " + name + " has the following email address: " + list[0].EMAIL
+  stream = await ply.talk(text)
+  res.send({audio: stream, text: JSON.stringify(list,null,1)})
+
 }
+
+// query the database for a user with the provided position 
+async function getUsersByPosition (req, res, next) {
+  position = req.session.slots.jobTitle
+  list = await users.scanUsersByPosition(position)
+
+  console.log(list)
+}
+
+// // create graphing calculator getContext
+// async function grapher(req, ers, next) {
+//   extras =
+//   '<div id="calculator" style="width:400; height:200px;"></div>' +
+//   '<script>' +
+//     ""
+//     "var elt = document.getElementById('calculator'); elt.keypad=false" +
+//     "var calculator = Desmos.GraphingCalculator(elt);" +
+//     "calculator.setExpression({id:'graph1', latex:'y=x^2'});" +
+//   '</script>'
+//   text = await ply.talk("STUFF")
+//   console.log(extras)
+//   res.send({audio: text , text: extras})
+// }
 
 module.exports = {
   fulfill: fulfill,

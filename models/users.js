@@ -51,6 +51,31 @@ function scanUsers (attrName, attrValue) {
   return ddb.scan(NAME, attrName, attrValue)
 }
 
+// query table by name
+async function scanUsersByName(attrValue) {
+   res = await ddb.scan(NAME, "FIRST_NAME", attrValue)
+   return dynamoCleanArray(res)
+}
+
+// query table by email
+async function scanUsersByEmail(attrValue) {
+  res = await ddb.scan(NAME, "EMAIL", attrValue)
+  return dynamoCleanArray(res)
+}
+
+// query table by position
+async function scanUsersByPosition(attrValue) {
+  res = await ddb.scan(NAME, "POSITION", attrValue)
+  return dynamoCleanArray(res)
+}
+
+function dynamoCleanArray (array) {
+  cleanRes = []
+  array.Items.forEach((ele) => {
+    cleanRes.push(dynamoClean(ele))
+  })
+  return cleanRes
+}
 // cleans up the dynamodb output
 function dynamoClean (entry) {
   ret = {
@@ -82,4 +107,7 @@ module.exports = {
   dynamoClean: dynamoClean,
   getUserClean: getUserClean,
   scanUsers: scanUsers,
+  scanUsersByName: scanUsersByName,
+  scanUsersByEmail: scanUsersByEmail,
+  scanUsersByPosition: scanUsersByPosition,
 }

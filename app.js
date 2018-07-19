@@ -8,7 +8,7 @@ const logger     = require('morgan')
 const cors       = require('cors')
 
 /// require routes
-const rec = require('./routes/recognition')
+const rec = require('./routes/authentication')
 const con = require('./routes/conversation')
 const add = require('./routes/addUser')
 const admin = require('./routes/admin')
