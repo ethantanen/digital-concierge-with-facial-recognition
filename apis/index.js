@@ -2,6 +2,7 @@ const outlook = require('./outlook')
 const maps = require('./maps')
 const random = require('./random')
 const slack = require('./slack')
+const dictionary = require('./dictionary')
 
 module.exports = {
 
@@ -23,7 +24,8 @@ module.exports = {
   getWeather: random.getWeather,
   sendSlackMessage: slack.postMessage,
   loveCalculator: random.loveCalculator,
-  
+  getDefinition: dictionary.getDefinition,
+
 
 
   // help

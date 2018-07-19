@@ -25,6 +25,7 @@ async function fulfill (req, res, next){
     'Emotions': getEmotions,
     'SearchWiki': searchWiki,
     'TheNews': getTheNews,
+    'Dictionary': getDefinition,
     'DownloadRepo': downloadRepo,
     'FindEmail': getUsersByName,
     'FindJobTitle': getUsersByPosition,
@@ -45,6 +46,14 @@ async function fulfill (req, res, next){
     // a handler does not exist for these intents
     send(req, res, next,"Sorry, I dont believe I can help with that right now. Please try again in the future or rephrase your intent.")
   }
+}
+
+// get the defintion of a word
+async function getDefinition(req, res, next) {
+  word = req.session.slots.WORD
+  json = await apis.getDefinition(word)
+  stream = await ply.talk(json.text)
+  res.send({audio: stream, text: json.extras})
 }
 
 // make an api request (defined in seperate file) and send the response to the client
@@ -75,7 +84,7 @@ async function getRecipe(req, res, next) {
 
 // get the number of minutes from ventera to a location
 async function getTimeToDest(req, res, next) {
-  json = await apis.getTimeDest(req.session.Location)
+  json = await apis.getTimeDest(req.session.slots.Location)
   send(req, res, next, json.text)
 }
 
@@ -159,15 +168,20 @@ async function getUsersByName(req, res, next) {
   text = "The first person with the name " + name + " has the following email address: " + list[0].EMAIL
   stream = await ply.talk(text)
   res.send({audio: stream, text: JSON.stringify(list,null,1)})
-
 }
 
-// query the database for a user with the provided position 
+// query the database for a user with the provided position
 async function getUsersByPosition (req, res, next) {
+
   position = req.session.slots.jobTitle
   list = await users.scanUsersByPosition(position)
 
-  console.log(list)
+  if (lisst.length == 0) return send(req, res, next, "I could not find any with the following position: " + position)
+
+  text = "The first person that fits that description is " + list[0].FIRST_NAME + " " + list[0].LAST_NAME + ". They are a "  + list[0].POSITION + " and their email is " + list[0].EMAIL
+  extras = JSON.stringify(list,null,1)
+  stream = await ply.talk(text)
+  res.send({audio: stream, text: extras})
 }
 
 // // create graphing calculator getContext
