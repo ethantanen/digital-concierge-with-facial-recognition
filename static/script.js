@@ -15,29 +15,27 @@ $(document)
        });
    }
 
-   // Get the modal
-var modal = document.getElementById('myModal');
-
-// Get the button that opens the modal
+   // Get the help modal pop up
+var helpModal = document.getElementById('helpModal');
+// Get the button that opens the help list modal
 var btn = document.getElementById("myBtn");
-
-// Get the <span> element that closes the modal
+// Get the <span> element that closes the help list modal
 var span = document.getElementsByClassName("close")[0];
 
-// When the user clicks the button, open the modal
+// When the user clicks the button, open the help list modal
 btn.onclick = function() {
-    modal.style.display = "block";
+  helpModal.style.display = "block";
 }
 
-// When the user clicks on <span> (x), close the modal
+// When the user clicks on <span> (x), close the help list modal
 span.onclick = function() {
-    modal.style.display = "none";
+  helpModal.style.display = "none";
 }
 
-// When the user clicks anywhere outside of the modal, close it
+// When the user clicks anywhere outside of the help list modal, close it
 window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
+    if (event.target == helpModal) {
+      helpModal.style.display = "none";
     }
 }
 
@@ -78,6 +76,13 @@ window.onclick = function(event) {
        }
      })
    }
+
+   function makeTextBox() {
+       var typedInfo = $('#response').val();
+
+         var fullTitle = $("<div style='display: block'  class='containerChat darkerChat'> <img src='\otherLogo.png' alt='Avatar'  class='rightChat'> <h4 class='textRight' style='color:white'>" + typedInfo + "</h4></div>");
+         $('#thingToAppend').append(fullTitle);
+     }
 
    META = null
    SEND_URL = '/authenticate'
@@ -155,18 +160,11 @@ window.onclick = function(event) {
          playAudio(res.audio.data)
        })
 
-       $('#makeTextBox').trigger("click");
+       makeTextBox();
        $("#response").val("");
        const objDiv = document.getElementById('scrollList');
        objDiv.scrollTop = objDiv.scrollHeight;
      })
 
-     $('#makeTextBox')
-     .click(() => {
-
-       var typedInfo = $('#response').val();
-
-         var fullTitle = $("<div style='display: block'  class='containerChat darkerChat'> <img src='\otherLogo.png' alt='Avatar'  class='rightChat'> <h4 class='textRight' style='color:white'>" + typedInfo + "</h4></div>");
-         $('#thingToAppend').append(fullTitle);
-     })
+     
  })
