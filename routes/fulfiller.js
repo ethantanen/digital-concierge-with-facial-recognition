@@ -88,7 +88,6 @@ async function getTimeToDest(req, res, next) {
   send(req, res, next, json.text)
 }
 
-
 // get the weather for a particular location
 async function getWeather(req, res, next) {
   json = await apis.getWeather(req.session.slots.LOCATION)
