@@ -3,47 +3,54 @@ const ply = require('../utilities/polly')
 const apis = require('../apis/index')
 
 async function fulfill (req, res, next){
-  switch (req.session.intent) {
-    case 'LogOff':
-      logOff(req, res, next)
-      break
-    case 'CheckWeather':
-      getWeather(req, res, next, req.session.slots.LOCATION)
-      break
-    case 'Recipe':
-      getRecipe(req, res, next, req.session.slots.foodDish)
-      break
-    case 'Joke':
-      getJoke(req, res, next)
-      break
-    case 'Emotions':
-      emotions(req, res, next)
-      break
-    case 'RonSwansonQuote':
-      getRonSwansonQuote(req, res, next)
-      break
-    case 'GetTimeToDest':
-      getTimeToDest(req, res, next, req.session.slots.Location)
-      break
-    case 'QuoteOfTheDay':
-      getQuoteOfTheDay(req, res, next)
-      break
-    case 'ISSLocation':
-      getISSLocation(req, res, next)
-      break
-    case 'SendSlack':
-      sendSlackMessage(req, res, next)
-      break
-    case 'SendEmail':
-      sendOutlookEmail(req, res, next)
-      break
-    default: send(req, res, next, "Sorry, I dont believe I can help with that right now. Please try again in the future or rephrase your intent.")
+  console.log("OH ME")
+  // list of intents
+  functional = {
+    'CheckWeather': getWeather,
+    'Recipe': getRecipe,
+    'GetTimeToDest': getTimeToDest,
+    'SendSlack': sendSlackMessage,
+    'SendEmail': sendOutlookEmail,
+    'LogOff': logOff,
+    'Emotions': getEmotions,
+    'SearchWiki': searchWiki,
+    'TheNews': getTheNews,
+
+
   }
+
+  info = {
+    'Joke': apis.getJoke,
+    'RonSwansonQuote': apis.getRonSwansonQuote,
+    'QuoteOfTheDay': apis.getQuoteOfTheDay,
+    'ISSLocation': apis.getISSLocation,
+  }
+
+  // fulfill intent or issue no intent found message
+  if (Object.keys(info).includes(req.session.intent)) {
+      func = info[req.session.intent]
+      json = await func()
+      send(req, res, next, json.text)
+  } else  if (Object.keys(functional).includes(req.session.intent)){
+      func = functional[req.session.intent]
+      func(req, res, next)
+  } else {
+    send(req, res, next,"Sorry, I dont believe I can help with that right now. Please try again in the future or rephrase your intent.")
+  }
+
 }
 
-// get ron swanson quote from the infamous televsion show parks and recreation
-async function getRonSwansonQuote(req, res, next) {
-  json = await apis.getRonSwansonQuote()
+
+async function getResponse (req , res, next, func) {
+  json = await api.func()
+  send(req, res, next, json.text)
+}
+
+
+async function searchWiki(req, res, next) {
+  console.log(req.session)
+  json = await apis.searchWiki(req.session.slots.searchTopic)
+  console.log(JSON.stringify(json))
   send(req, res, next, json.text)
 }
 
@@ -51,37 +58,29 @@ async function getRonSwansonQuote(req, res, next) {
 async function getTheNews(req, res, next) {
   json = await apis.getTheNews()
   stream = await ply.talk(json.text)
-  res.send({audio: stream, text: json.text + " " + json.extras})
+  res.send({audio: stream, text: json.extras})
 }
 
-// get international space station location
-async function getISSLocation(req, res, next) {
-  json = await apis.getISSLocation()
-  send(req, res, next, json.text)
-}
+
 
 // get a saucy recipe
-async function getRecipe(req, res, next, food) {
-  json = await apis.getRecipe(food)
+async function getRecipe(req, res, next) {
+  json = await apis.getRecipe(eq.session.slots.foodDish)
   stream = await ply.talk(json.text)
   res.send({audio: stream, text: json.extras})
 }
 
 // returns the number of minutes from ventera to a location
-async function getTimeToDest(req, res, next, location) {
-  json = await apis.getTimeDest(location)
+async function getTimeToDest(req, res, next) {
+  json = await apis.getTimeDest(req.session.Location)
   send(req, res, next, json.text)
 }
 
-// get the quote of the day!
-async function getQuoteOfTheDay(req, res, next) {
-  json = await apis.getQuoteOfTheDay()
-  send(req, res, next, json.text)
-}
+
 
 // get the weather for a particular location
-async function getWeather(req, res, next, location) {
-  json = await apis.getWeather(location)
+async function getWeather(req, res, next) {
+  json = await apis.getWeather(req.session.slots.LOCATION)
   stream = await ply.talk(json.text)
   res.send({audio: stream, text: json.extras})
 
@@ -117,14 +116,8 @@ async function sendOutlookEmail(req, res, next) {
   }
 }
 
-// calvin says a joke
-async function getJoke(req, res, next) {
-  json = await apis.getJoke()
-  send(req, res, next, json.text)
-}
-
 // calvin tells you about your perty smile
-async function emotions(req, res, next) {
+async function getEmotions(req, res, next) {
 
   // couple response options
   em = req.session.face.FaceDetails[0].Emotions

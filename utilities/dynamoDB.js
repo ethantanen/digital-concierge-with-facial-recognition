@@ -132,6 +132,30 @@ function deleteItem (table, userId) {
   })
 }
 
+// Query Table
+function scan(table, filter, value) {
+  var params = {
+    TableName: table,
+    ExpressionAttributeValues: {
+      ':fil': {
+        S: value
+      }
+    },
+    ExpressionAttributeNames: {
+      '#filter' : filter
+    },
+
+    FilterExpression: 'contains (#filter, :fil)'
+  }
+  return new Promise((resolve, reject) => {
+    ddb.scan(params, (err, data) => {
+      if (err) return reject(err)
+      return resolve(data)
+    })
+  })
+}
+
+
 module.exports = {
   createTable: createTable,
   listTables: listTables,
@@ -139,5 +163,6 @@ module.exports = {
   deleteTable: deleteTable,
   putItem: putItem,
   getItem: getItem,
-  deleteItem: deleteItem
+  deleteItem: deleteItem,
+  scan: scan,
 }

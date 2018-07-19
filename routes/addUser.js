@@ -47,8 +47,10 @@ router.post("/", async (req, res) => {
     // add user to database
     user = await addUser64(NAME, image)
 
+    text = user.FIRST_NAME + "added to the system."
+    stream = await ply.talk(user.FIRST_NAME + "added to the system.")
     // respond with custom greeting
-    res.send({audio: await ply.talk(user.FIRST_NAME + "added to the system.")})
+    res.send({audio: stream, text: text})
     console.log('user successfully added to calvin\'s system...')
 
   } catch (err) {

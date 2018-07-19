@@ -47,8 +47,8 @@ function deleteUser (id) {
 }
 
 // query table
-function queryUsers () {
-
+function scanUsers (attrName, attrValue) {
+  return ddb.scan(NAME, attrName, attrValue)
 }
 
 // cleans up the dynamodb output
@@ -78,7 +78,7 @@ module.exports = {
   addUser: addUser,
   getUser: getUser,
   deleteUser: deleteUser,
-  queryUsers: queryUsers,
   dynamoClean: dynamoClean,
   getUserClean: getUserClean,
+  scanUsers: scanUsers,
 }

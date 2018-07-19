@@ -44,7 +44,7 @@ async function getTheNews() {
   index = Math.floor(Math.random(json.totalResults))
   title = json.articles[index].title
   article = json.articles[index].description
-  url = json.articles[index.url]
+  url = json.articles[index].url
   text = 'There exists an article with title: ' + title + ". Here is a brief description: " + article
   return {text: text, extras: url}
 }

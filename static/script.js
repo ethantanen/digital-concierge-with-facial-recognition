@@ -24,7 +24,7 @@ var btn = document.getElementById("myBtn");
 // Get the <span> element that closes the modal
 var span = document.getElementsByClassName("close")[0];
 
-// When the user clicks the button, open the modal 
+// When the user clicks the button, open the modal
 btn.onclick = function() {
     modal.style.display = "block";
 }
@@ -108,9 +108,10 @@ window.onclick = function(event) {
        }
 
        sendData(json, SEND_URL, (res) => {
+         console.log(res)
          playAudio(res.audio.data)
          makeCalvinTextBox(res.text);
-          
+
          SEND_URL = '/authenticate'
        })
      })
@@ -134,7 +135,7 @@ window.onclick = function(event) {
        if (event.keyCode === 13) {
          $("#conversation").click();
        }
-      });
+      })
 
    $('#conversation')
      .click(() => {
