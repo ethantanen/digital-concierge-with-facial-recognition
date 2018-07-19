@@ -95,7 +95,39 @@ async function getWeather(city) {
   return {text: text, extras: extras.toString()}
 }
 
+// get random quote, either famous persons or movie quotes
+async function getQuote() {
+  endpoints = ['famous', 'movies']
+  endpoint = endpoints[Math.floor(Math.random(2))]
+  options = {
+    url: "https://andruxnet-random-famous-quotes.p.mashape.com/?cat=" + endpoint + "&count=1" ,
+    json: true,
 
+    headers: {
+      "X-Mashape-Key": "jLowL9VQ9CmshLR1eNzx8hVKJIxKp1RVGp7jsn3gcL8xqPRolM",
+      "Accept": "application/json",
+    }
+  }
+  json = await request(options)
+  return {text: json[0].quote + " ... " + json[0].author}
+}
+
+async function loveCalculator(name1, name2) {
+  options = {
+    url: "https://love-calculator.p.mashape.com/getPercentage?fname=" + name1 + "&sname=" + name2,
+    json: true,
+    headers: {
+      "X-Mashape-Key": "jLowL9VQ9CmshLR1eNzx8hVKJIxKp1RVGp7jsn3gcL8xqPRolM",
+      "Accept": "application/json",
+    }
+  }
+  json = await request(options)
+  return "Greetings " + name1 + " and " + name2 + ". You have a " + json.percentage + " percent match. I believe " + json.result
+}
+
+async function getRestaurantReview() {
+  key = "8ec44e2fa79f8312424cc3f486110554"
+}
 
 module.exports = {
   getISSLocation: getISSLocation,
@@ -105,8 +137,10 @@ module.exports = {
   searchWiki: searchWiki,
   getTheNews: getTheNews,
   getQuoteOfTheDay: getQuoteOfTheDay,
+  getQuote: getQuote,
   getRecipe: getRecipe,
   getJoke: getJoke,
   getWeather: getWeather,
+  loveCalculator: loveCalculator,
 
 }
