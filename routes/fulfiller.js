@@ -30,7 +30,10 @@ async function fulfill (req, res, next){
     'FindEmail': getUsersByName,
     'FindJobTitle': getUsersByPosition,
     'FindLastName': getUsersByName,
+    'Stop': stop,
   }
+
+
 
   // fulfill intent or issue no intent found message
   if (Object.keys(info).includes(req.session.intent)) {
@@ -181,6 +184,12 @@ async function getUsersByPosition (req, res, next) {
   extras = JSON.stringify(list,null,1)
   stream = await ply.talk(text)
   res.send({audio: stream, text: extras})
+
+}
+
+// stop the current intent 
+function stop (req, res, next) {
+  res.send({audio: undefined, text: "Intent ended. Ask me anything!"})
 }
 
 // // create graphing calculator getContext
