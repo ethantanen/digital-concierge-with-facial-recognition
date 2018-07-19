@@ -73,6 +73,7 @@ async function getUserClean(id) {
   }
 }
 
+
 module.exports = {
   deleteTable: deleteTable,
   addUser: addUser,

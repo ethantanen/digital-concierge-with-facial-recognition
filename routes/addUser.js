@@ -19,7 +19,7 @@ const NAME = process.env.NAME
 // check if user is already in the system
 router.use( async (req, res, next) => {
 
-  // check face collection against image
+  // check if face is already in collection
   image = new Buffer(req.body.image.split(',')[1],"base64")
   check = await rk.searchFacesByImage64(NAME, image)
 
@@ -47,17 +47,20 @@ router.post("/", async (req, res) => {
     // add user to database
     user = await addUser64(NAME, image)
 
+    // respond with a confirmation
     text = user.FIRST_NAME + "added to the system."
     stream = await ply.talk(user.FIRST_NAME + "added to the system.")
-    // respond with custom greeting
     res.send({audio: stream, text: text})
+
     console.log('user successfully added to calvin\'s system...')
 
   } catch (err) {
 
     // log the error and return an error message
     console.log(err)
-    res.send({audio: await ply.talk('I was unable to add you to the system.')})
+    text = 'I was unable to add you to the system.'
+    stream = await ply.talk(text)
+    res.send({audio: stream, text: text})
 
   }
 })
