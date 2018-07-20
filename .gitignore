@@ -1,0 +1,4 @@
+.DS_Store
+encryption/
+app_env
+config/app_env
