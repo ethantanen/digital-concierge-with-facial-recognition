@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title> CALVIN </title>
+  <link rel="stylesheet" href="bootstrap.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://www.desmos.com/api/v1.1/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+  <script src="script.js"></script>
+</head>
+
+<body style="background-color: lightgray">
+  <div class="container">
+    <!-- Begin Calvin Header -->
+    <div class="row" id="top">
+      <div class="col-xs-8 col-xs-offset-2 col-sm-8 col-sm-offset-2 col-md-8 col-md-offset-2 col-lg-3 col-lg-offset-0">
+        <img id="image" alt="calvin" src='calvinLogo.jpg'>
+      </div>
+      <div class="col-xs-2 col-sm-2 col-md-2 col-lg-9"></div>
+    </div>
+    <!-- End Calvin Header -->
+
+    <div class="row" id="container">
+
+      <!-- Begin Video Elements -->
+      <div class="col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-3 col-lg-offset-0">
+        <div class="row" id="fill">
+          <div class="photo">
+            <video id="videos" autoplay></video>
+          </div>
+          <div class="photo">
+            <canvas id="canvas" width=277 height=204></canvas>
+            <img id="bulldog" src="bulldog.jpg"></img>
+          </div>
+          <div id="buttons">
+            <button id="snap" class="btn btn-primary">Snap Photo</button>
+            <button id="send" class="btn btn-success">Send Photo</button>
+          </div>
+        </div>
+        <div class="col-xs-1 col-sm-1 col-md-1"></div>
+      </div>
+      <!-- End Video Elements -->
+      <div class="col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-9 col-lg-offset-0">
+        <div class="row">
+          <!-- Respond to Prompts Form -->
+          <img id="bull" alt="bulldog" src="bulldog.png">
+          <!-- Trigger/Open The Modal -->
+          <button id="myBtn">
+            <strong>i</strong>
+          </button>
+          <div id="response-box">
+            <div id="scrollList" style="width:100%;height:390px;overflow-y: auto; flex-grow: 1">
+              <li id="thingToAppend" style="list-style: none;"></li>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-11 col-sm-9 col-md-9 col-lg-9">
+            <input id="response" autocomplete="off" name="text" type="text" class="form-control" placeholder="Talk to Calvin">
+          </div>
+          <div class="col-xs-8 col-xs-offset-1 col-sm-3 col-sm-offset-0 col-md-3 col-md-offset-0 col-lg-3 col-lg-offset-0">
+            <button id="conversation" type="submit" class="btn btn-success">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- The Modal -->
+  <div id="helpModal" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+      <div class="row" id="heading">
+        <span class="close">&times;</span>
+        <h2>Calvin Commands:</h2>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <ul>
+            <li>Sign Up</li>
+            <li>Calvin Age</li>
+            <li>Check Weather</li>
+            <li>Emotion Detection</li>
+            <li>Time to Destination</li>
+            <li>ISS Location</li>
+            <li>Joke</li>
+            <li>Origin</li>
+            <li>Quote Of the Day</li>
+          </ul>
+        </div>
+        <div class="col-sm-4">
+          <ul>
+            <li>Random Number Fact</li>
+            <li>Recipe</li>
+            <li>Ron Swanson Quote</li>
+            <li>Wiki Search</li>
+            <li>Send Email</li>
+            <li>Send Slack Message</li>
+            <li>News</li>
+            <li>Ventera Info</li>
+            <li>Translate</li>
+          </ul>
+        </div>
+        <div class="col-sm-4">
+          <ul>
+            <li>Dictionary</li>
+            <li>Download Repo</li>
+            <li>Find Email</li>
+            <li>Find Job Title</li>
+            <li>Find Last Name</li>
+            <li>Love Calculator</li>
+            <li>Random Quote</li>
+            <li>Restaurant</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+  <button style="display: none" id="makeTextBox"></button>
+  <audio id="audio"> </audio>
+</body>
+
+</html>
