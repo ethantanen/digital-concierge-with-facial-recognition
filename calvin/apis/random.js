@@ -122,12 +122,50 @@ async function loveCalculator(name1, name2) {
     }
   }
   json = await request(options)
-  return "Greetings " + name1 + " and " + name2 + ". You have a " + json.percentage + " percent match. I believe " + json.result
+  return "Greetings " + name1 + " and " + name2 + ". You have a " + json.percentage + " percent match. " + json.result + '.'
 }
 
-async function getRestaurantReview() {
+async function getRestaurantInfo() {
   key = "8ec44e2fa79f8312424cc3f486110554"
+  options = {
+    url: "https://developers.zomato.com/api/v2.1/search?q=chipotle",
+    json: true,
+    headers: {
+      "user-key":key
+    }
+  }
+  json = await request(options)
+  content = json.restaurants
+  title = 'restaurant.name'
+  keys = ['restaurant.location.address','restaurant.user_rating.aggregate_rating','restaurant.url']
+  return {text: "testing", extras: formatPrintOut("Restaurant Query:",title,keys,content)}
 }
+
+// title is key to content object title ...
+function formatPrintOut(responseTitle,cardTitle,keys,content) {
+  console.log(content)
+  printout = "<h1>" + responseTitle + "</h1>"
+  printout += "<div class='panel panel-primary'>"
+  content.forEach((info) => {
+    printout += "<div class='panel-heading'>" + navJSON(info,title) + "</div>"
+    keys.forEach((item) => {
+      printout += "<div class='panel-body'>" + navJSON(info,item) + "</div>"
+    })
+  })
+  printout+="</div>"
+  return printout
+}
+
+// navigate the json object based on the key of the form 'key1.key2.key3...'
+function navJSON(json,key) {
+  j = json
+  ks = key.split('.')
+  ks.forEach((ele) => {
+    j = j[ele]
+  })
+  return j
+}
+
 
 module.exports = {
   getISSLocation: getISSLocation,
@@ -142,5 +180,6 @@ module.exports = {
   getJoke: getJoke,
   getWeather: getWeather,
   loveCalculator: loveCalculator,
+  getRestaurantInfo: getRestaurantInfo,
 
 }

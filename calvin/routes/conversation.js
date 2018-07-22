@@ -2,7 +2,7 @@
 const uuidv1 = require('uuid/v1')
 
 // custom modules
-const fulfiller = require('./fulfiller')
+const fulfiller = require('../fulfiller/index')
 
 // aws utilities
 const ply = require('../utilities/polly')

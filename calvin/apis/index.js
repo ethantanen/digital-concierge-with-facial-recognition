@@ -25,6 +25,7 @@ module.exports = {
   sendSlackMessage: slack.postMessage,
   loveCalculator: random.loveCalculator,
   getDefinition: dictionary.getDefinition,
+  getRestaurantInfo: random.getRestaurantInfo,
 
 
 

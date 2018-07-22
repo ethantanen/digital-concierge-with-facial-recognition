@@ -79,9 +79,8 @@ window.onclick = function(event) {
 
    function makeTextBox() {
        var typedInfo = $('#response').val();
-
-         var fullTitle = $("<div style='display: block'  class='containerChat darkerChat'> <img src='otherLogo.png' alt='Avatar'  class='rightChat'> <h4 class='textRight' style='color:white'>" + typedInfo + "</h4></div>");
-         $('#thingToAppend').append(fullTitle);
+       var fullTitle = $("<div style='display: block'  class='containerChat darkerChat'> <img src='otherLogo.png' alt='Avatar'  class='rightChat'> <h4 class='textRight' style='color:white'>" + typedInfo + "</h4></div>");
+       $('#thingToAppend').append(fullTitle);
      }
 
    META = null
