@@ -45,8 +45,8 @@ router.post('/', async (req, res) => {
     user = await addUser64(NAME, image)
 
     // respond with a confirmation
-    text = user.FIRST_NAME + 'added to the system.'
-    stream = await ply.talk(user.FIRST_NAME + 'added to the system.')
+    text = user.FIRST_NAME + ' added to the system.'
+    stream = await ply.talk(text)
     res.send({audio: stream, text: text})
 
     console.log('user successfully added to calvin\'s system...')
