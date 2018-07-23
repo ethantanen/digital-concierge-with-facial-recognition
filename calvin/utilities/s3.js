@@ -12,13 +12,13 @@ AWS.config.update({
 })
 
 // Create S3 Service Object
-var s3 = new AWS.S3({
+let s3 = new AWS.S3({
   apiVersion: '2012-10-17'
 })
 
 // Create Bucket
 function createBucket (bucket) {
-  var params = {
+  let params = {
     Bucket: bucket
   }
   return new Promise((resolve, reject) => {
@@ -31,7 +31,7 @@ function createBucket (bucket) {
 
 // Delete Bucket
 function deleteBucket (bucket) {
-  var params = {
+  let params = {
     Bucket: bucket
   }
   return new Promise((resolve, reject) => {
@@ -54,7 +54,7 @@ function listBuckets () {
 
 // Put Object
 function putObject (bucket, body, key) {
-  var params = {
+  let params = {
     Body: body,
     Bucket: bucket,
     Key: key
@@ -69,7 +69,7 @@ function putObject (bucket, body, key) {
 
 // Put Object
 function putObject64 (bucket, buffer, key) {
-  var params = {
+  let params = {
     Body: buffer,
     Bucket: bucket,
     Key: key,
@@ -86,7 +86,7 @@ function putObject64 (bucket, buffer, key) {
 
 // Get Object
 function getObject (bucket, key) {
-  var params = {
+  let params = {
     Bucket: bucket,
     Key: key
   }
@@ -100,7 +100,7 @@ function getObject (bucket, key) {
 
 // Delete Object
 function deleteObject (bucket, key) {
-  var params = {
+  let params = {
     Bucket: bucket,
     Key: key
   }
@@ -114,7 +114,7 @@ function deleteObject (bucket, key) {
 
 // List Objects
 function listObjects (bucket) {
-  var params = {
+  let params = {
     Bucket: bucket
   }
   return new Promise((resolve, reject) => {

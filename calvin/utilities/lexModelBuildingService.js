@@ -1,9 +1,8 @@
 const AWS = require('aws-sdk')
 
 const lexModelBuilder = new AWS.LexModelBuildingService({
-  apiVersion: '2017-04-19',
+  apiVersion: '2017-04-19'
 })
-
 
 /**
  * NOTE: the zipped json archive of the bot can be located
@@ -11,12 +10,12 @@ const lexModelBuilder = new AWS.LexModelBuildingService({
  */
 
 // Export a bot
-function getExport(botName, botVersion) {
-  var params = {
+function getExport (botName, botVersion) {
+  let params = {
     exportType: 'LEX',
     name: botName,
     resourceType: 'BOT',
-    version: botVersion,
+    version: botVersion
   }
   return new Promise((resolve, reject) => {
     lexModelBuilder.getExport(params, (err, data) => {
@@ -28,11 +27,11 @@ function getExport(botName, botVersion) {
 
 // NOTE: bot should be buffer or base64 encoded string
 // Start import bot
-function startImport(bot) {
-  var params = {
+function startImport (bot) {
+  let params = {
     mergeStrategy: 'OVERWRITE_LATEST',
     payload: bot,
-    resourceType: 'BOT',
+    resourceType: 'BOT'
   }
   return new Promise((resolve, reject) => {
     lexModelBuilder.startImport(params, (err, data) => {
@@ -43,9 +42,9 @@ function startImport(bot) {
 }
 
 // Get imported bots information
-function getImport(importId) {
-  var params = {
-    importId: importId,
+function getImport (importId) {
+  let params = {
+    importId: importId
   }
   return new Promise((resolve, reject) => {
     lexModelBuilder.getImport(params, (err, data) => {
@@ -53,5 +52,4 @@ function getImport(importId) {
       return resolve(data)
     })
   })
-
 }

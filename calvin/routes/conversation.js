@@ -12,7 +12,9 @@ const lex = require('../utilities/lexRuntime')
 const router = require('express').Router()
 
 // add intents to this list to increase guest permissions
-const guestPermissions = ['AddUser',]
+const guestPermissions = ['AddUser','Joke','RonSwansonQuote',
+  'ISSLocation','RandomNumberFact','LoveCalculator','TodaysDate',
+  'Recipe','CheckWeather','Dictionary','Stop']
 
 // authenticate users and route accordingly
 router.use((req, res, next) => {
@@ -36,14 +38,13 @@ function user (req, res, next) {
     // proceed as usual
     lexChat(req, res, next)
   } else {
-    //fulfill request with extended message --> ex) the body of an email
+    // fulfill request with extended message --> ex) the body of an email
     req.session.msg = req.body.text
     fulfiller.fulfill(req, res, next)
   }
 }
 
-async function guest(req, res, next) {
-
+async function guest (req, res, next) {
   // grab conversation information
   id = req.session.guestaid
   text = req.body.text
@@ -52,10 +53,10 @@ async function guest(req, res, next) {
   lexRes = await lex.postContent(id, text)
 
   // execute this block if the user has permission to do so
-  if(guestPermissions.includes(lexRes.intentName)) {
+  if (guestPermissions.includes(lexRes.intentName)) {
     // return meta data if CreateUser intent is finished gathering information
-    if(lexRes.intentName === 'AddUser' && lexRes.dialogState === 'Fulfilled') {
-      response = "Please send me an image to complete the registration process. You will need to send the image after signup is complete to login"
+    if (lexRes.intentName === 'AddUser' && lexRes.dialogState === 'Fulfilled') {
+      response = 'Please send me an image to complete the registration process. You will need to send the image after signup is complete to login'
       stream = await ply.talk(response)
       res.send({audio: stream, text: response, meta: lexRes.slots})
     } else {
@@ -78,22 +79,22 @@ async function lexChat (req, res, next) {
   // send text to lex chatbot
   lexRes = await lex.postContent(id, text)
   // check if entries are ready for fulfillment
-  if(lexRes.dialogState === 'ReadyForFulfillment') {
+  if (lexRes.dialogState === 'ReadyForFulfillment') {
     // fulfill request
     req.session.intent = lexRes.intentName
     req.session.slots = lexRes.slots
     fulfiller.fulfill(req, res, next)
   } else {
-    //send lex's response back to user
+    // send lex's response back to user
     send(req, res, next, lexRes.message)
   }
 }
 
-async function send(req, res, next, text) {
+async function send (req, res, next, text) {
   stream = await ply.talk(text)
   res.send({audio: stream, text: text})
 }
 
 module.exports = {
-  router: router,
+  router: router
 }

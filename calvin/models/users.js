@@ -6,7 +6,7 @@ const NAME = process.env.NAME
 
 // create table, faceprint as primary-key
 function createTable () {
-  return ddb.createTable(NAME, "USER_ID")
+  return ddb.createTable(NAME, 'USER_ID')
 }
 
 // delete table
@@ -38,7 +38,7 @@ function addUser (profile) {
 
 // get user
 function getUser (id) {
-   return ddb.getItem(NAME, id)
+  return ddb.getItem(NAME, id)
 }
 
 // delete user
@@ -52,23 +52,24 @@ function scanUsers (attrName, attrValue) {
 }
 
 // query table by name
-async function scanUsersByName(attrValue) {
-   res = await ddb.scan(NAME, "FIRST_NAME", attrValue)
-   return dynamoCleanArray(res)
+async function scanUsersByName (attrValue) {
+  res = await ddb.scan(NAME, 'FIRST_NAME', attrValue)
+  return dynamoCleanArray(res)
 }
 
 // query table by email
-async function scanUsersByEmail(attrValue) {
-  res = await ddb.scan(NAME, "EMAIL", attrValue)
+async function scanUsersByEmail (attrValue) {
+  res = await ddb.scan(NAME, 'EMAIL', attrValue)
   return dynamoCleanArray(res)
 }
 
 // query table by position
-async function scanUsersByPosition(attrValue) {
-  res = await ddb.scan(NAME, "POSITION", attrValue)
+async function scanUsersByPosition (attrValue) {
+  res = await ddb.scan(NAME, 'POSITION', attrValue)
   return dynamoCleanArray(res)
 }
 
+// clean an array of dynamoDB query results
 function dynamoCleanArray (array) {
   cleanRes = []
   array.Items.forEach((ele) => {
@@ -76,28 +77,27 @@ function dynamoCleanArray (array) {
   })
   return cleanRes
 }
-// cleans up the dynamodb output
+// clean an dynamo db result
 function dynamoClean (entry) {
   ret = {
     FIRST_NAME: entry.FIRST_NAME.S,
     LAST_NAME: entry.LAST_NAME.S,
     EMAIL: entry.EMAIL.S,
-    POSITION: entry.POSITION.S,
+    POSITION: entry.POSITION.S
   }
   return ret
 }
 
 // retrieve a user and return a cleaned version of the data
-async function getUserClean(id) {
+async function getUserClean (id) {
   try {
     user = await getUser(id)
     console.log(user)
-    return dynamoClean (user.Item)
+    return dynamoClean(user.Item)
   } catch (err) {
     return "can't find user"
   }
 }
-
 
 module.exports = {
   deleteTable: deleteTable,
@@ -109,5 +109,5 @@ module.exports = {
   scanUsers: scanUsers,
   scanUsersByName: scanUsersByName,
   scanUsersByEmail: scanUsersByEmail,
-  scanUsersByPosition: scanUsersByPosition,
+  scanUsersByPosition: scanUsersByPosition
 }

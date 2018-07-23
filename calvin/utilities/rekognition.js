@@ -11,13 +11,13 @@ AWS.config.update({
 })
 
 // Create Rekognition Service Object
-var rk = new AWS.Rekognition({
+let rk = new AWS.Rekognition({
   apiVersion: '2016-06-27'
 })
 
 // Create Collection
 function createCollection (collection) {
-  var params = {
+  let params = {
     CollectionId: collection
   }
   return new Promise((resolve, reject) => {
@@ -30,7 +30,7 @@ function createCollection (collection) {
 
 // Delete Collection
 function deleteCollection (collection) {
-  var params = {
+  let params = {
     CollectionId: collection
   }
   return new Promise((resolve, reject) => {
@@ -43,7 +43,7 @@ function deleteCollection (collection) {
 
 // Index Faces
 function indexFaces (collection, bucket, image) {
-  var params = {
+  let params = {
     CollectionId: collection,
     Image: {
       S3Object: {
@@ -64,8 +64,8 @@ function indexFaces (collection, bucket, image) {
 }
 
 // Index Base64 Encoded Image
-function indexFaces64(collection, buffer) {
-  var params = {
+function indexFaces64 (collection, buffer) {
+  let params = {
     CollectionId: collection,
     Image: {
       Bytes: buffer
@@ -94,7 +94,7 @@ function listCollections () {
 
 // Search Faces
 function searchFaces (collection, faceId) {
-  var params = {
+  let params = {
     CollectionId: collection,
     FaceId: faceId
   }
@@ -108,7 +108,7 @@ function searchFaces (collection, faceId) {
 
 // Search Faces By Image
 function searchFacesByImage (collection, bucket, image) {
-  var params = {
+  let params = {
     CollectionId: collection,
     Image: {
       S3Object: {
@@ -127,7 +127,7 @@ function searchFacesByImage (collection, bucket, image) {
 
 // Search Faces By Base63 Encoded Image
 function searchFacesByImage64 (collection, buffer) {
-  var params = {
+  let params = {
     CollectionId: collection,
     Image: {
       Bytes: buffer
@@ -143,7 +143,7 @@ function searchFacesByImage64 (collection, buffer) {
 
 // Delete Faces
 function deleteFaces (collection, id) {
-  var params = {
+  let params = {
     CollectionId: collection,
     FaceIds: [
       id
@@ -159,7 +159,7 @@ function deleteFaces (collection, id) {
 
 // Detect Faces (emotions, features, etc)
 function detectFaces (bucket, image) {
-  var params = {
+  let params = {
     Image: {
       S3Object: {
         Bucket: bucket,
@@ -180,7 +180,7 @@ function detectFaces (bucket, image) {
 
 // Detect Faces (emotions, features, etc)
 function detectFaces64 (buffer) {
-  var params = {
+  let params = {
     Image: {
       Bytes: buffer
     },
@@ -207,5 +207,5 @@ module.exports = {
   searchFacesByImage: searchFacesByImage,
   searchFacesByImage64: searchFacesByImage64,
   deleteFaces: deleteFaces,
-  detectFaces64: detectFaces64,
+  detectFaces64: detectFaces64
 }

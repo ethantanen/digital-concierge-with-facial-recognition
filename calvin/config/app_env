@@ -19,3 +19,9 @@ export MAP_TOKEN="sk.eyJ1IjoiZXRoYW50YW5lbiIsImEiOiJjampyM3VjbGE3eWE3M3ByNXhlaDF
 
 # Slack credentials
 export SLACK_TOKEN="xoxp-366481641941-370889279687-400098192434-23a8ce00a7dbd4fef256cb768bb5d546"
+
+# Twilio credentials 
+export TWILIO_SID="ACe56f52118752195203f9e28883152d8d"
+export TWILIO_TOKEN="6b26deb85b438f945b9df0e3a74cfd22"
+
+

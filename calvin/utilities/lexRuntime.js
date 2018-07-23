@@ -28,13 +28,13 @@ const ACCEPT = 'audio/*'
  * users conversation
  */
 function postContent (userId, text) {
-  var params = {
+  let params = {
     botAlias: BOT_ALIAS,
     botName: BOT_NAME,
     contentType: CONTENT_TYPE,
     userId: userId,
     accept: ACCEPT,
-    inputStream: text,
+    inputStream: text
   }
   return new Promise((resolve, reject) => {
     lex.postContent(params, (err, data) => {
@@ -48,7 +48,7 @@ function postContent (userId, text) {
  * Post text to lex
  */
 function postText (userId, text) {
-  var params = {
+  let params = {
     botAlias: BOT_ALIAS,
     botName: BOT_NAME,
     userId: userId,

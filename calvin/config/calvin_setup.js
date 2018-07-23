@@ -15,10 +15,9 @@ setupSystem()
 /*
  * Create necessary storage containers
  */
-function setupSystem() {
-
+function setupSystem () {
   // create table to store users information
-  p1 = ddb.createTable(name,"USER_ID")
+  p1 = ddb.createTable(name, 'USER_ID')
 
   // create collection for indexed faces
   p2 = rk.createCollection(name)
@@ -29,6 +28,6 @@ function setupSystem() {
       console.log(data)
     })
     .catch((err) => {
-      console.log("Couldn't build system. Name may be taken.",err)
+      console.log("Couldn't build system. Name may be taken.", err)
     })
 }

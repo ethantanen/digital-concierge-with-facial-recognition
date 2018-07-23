@@ -8,13 +8,13 @@ const AWS = require('aws-sdk')
 
 // Create DynamoDB service object
 AWS.config.update({region: 'us-east-1'})
-var ddb = new AWS.DynamoDB({
+let ddb = new AWS.DynamoDB({
   apiVersion: '2012-10-08'
 })
 
 // Create Table
 function createTable (table, key) {
-  var params = {
+  let params = {
     AttributeDefinitions: [
       {
         AttributeName: key,
@@ -56,7 +56,7 @@ function listTables () {
 
 // Describe Table
 function describeTable (table) {
-  var params = {
+  let params = {
     TableName: table
   }
   return new Promise((resolve, reject) => {
@@ -69,7 +69,7 @@ function describeTable (table) {
 
 // Delete Table
 function deleteTable (table) {
-  var params = {
+  let params = {
     TableName: table
   }
   return new Promise((resolve, reject) => {
@@ -83,7 +83,7 @@ function deleteTable (table) {
 // Put Item
 // TODO: add key to item's object for each new feature
 function putItem (table, item) {
-  var params = {
+  let params = {
     Item: item,
     ReturnConsumedCapacity: 'TOTAL',
     TableName: table
@@ -98,7 +98,7 @@ function putItem (table, item) {
 
 // Get Item
 function getItem (table, key) {
-  var params = {
+  let params = {
     Key: {
       USER_ID: {
         S: key
@@ -116,7 +116,7 @@ function getItem (table, key) {
 
 // Delete Item
 function deleteItem (table, userId) {
-  var params = {
+  let params = {
     Key: {
       USER_ID: {
         S: userId
@@ -133,8 +133,8 @@ function deleteItem (table, userId) {
 }
 
 // Query Table
-function scan(table, filter, value) {
-  var params = {
+function scan (table, filter, value) {
+  let params = {
     TableName: table,
     ExpressionAttributeValues: {
       ':fil': {
@@ -142,7 +142,7 @@ function scan(table, filter, value) {
       }
     },
     ExpressionAttributeNames: {
-      '#filter' : filter
+      '#filter': filter
     },
 
     FilterExpression: 'contains (#filter, :fil)'
@@ -155,7 +155,6 @@ function scan(table, filter, value) {
   })
 }
 
-
 module.exports = {
   createTable: createTable,
   listTables: listTables,
@@ -164,5 +163,5 @@ module.exports = {
   putItem: putItem,
   getItem: getItem,
   deleteItem: deleteItem,
-  scan: scan,
+  scan: scan
 }

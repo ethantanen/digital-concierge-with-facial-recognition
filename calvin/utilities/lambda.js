@@ -1,9 +1,8 @@
 const AWS = require('aws-sdk')
 
 var lambda = new AWS.Lambda({
-  apiVersion: '2015-03-31',
+  apiVersion: '2015-03-31'
 })
-
 
 function addPermission () {
 

@@ -10,13 +10,13 @@ AWS.config.update({
 })
 
 // Create Polly service object
-var polly = new AWS.Polly({
+let polly = new AWS.Polly({
   apiVersion: '2016-06-10'
 })
 
 // Synthesize Speech
 function synthesizeSpeech (text) {
-  var params = {
+  let params = {
     OutputFormat: 'mp3',
     SampleRate: '8000',
     Text: text,
@@ -34,7 +34,7 @@ function synthesizeSpeech (text) {
  * This function uses polly to convert text to
  * speech
  */
-async function talk(text){
+async function talk (text) {
   data = await synthesizeSpeech(text)
   return data.AudioStream
 }

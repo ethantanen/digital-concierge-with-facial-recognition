@@ -3,9 +3,9 @@ const maps = require('./maps')
 const random = require('./random')
 const slack = require('./slack')
 const dictionary = require('./dictionary')
+const twilio = require('./twilio')
 
 module.exports = {
-
 
   sendEmail: outlook.sendEmail,
   getMail: outlook.getMail,
@@ -26,8 +26,7 @@ module.exports = {
   loveCalculator: random.loveCalculator,
   getDefinition: dictionary.getDefinition,
   getRestaurantInfo: random.getRestaurantInfo,
-
-
+  sendSMS: twilio.sendSMS
 
   // help
   // dict
