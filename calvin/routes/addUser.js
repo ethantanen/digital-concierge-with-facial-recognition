@@ -48,7 +48,6 @@ router.post('/', async (req, res) => {
     text = user.FIRST_NAME + ' added to the system.'
     stream = await ply.talk(text)
     res.send({audio: stream, text: text})
-
     console.log('user successfully added to calvin\'s system...')
   } catch (err) {
     // log the error and return an error message
